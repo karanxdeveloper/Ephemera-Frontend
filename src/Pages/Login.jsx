@@ -1,23 +1,69 @@
+import axios from 'axios'
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 function Login() {
 
   const [currState,setCurrState] = useState("Sign Up")
   const [name,setName] = useState("")
-  const [mail,setMail] = useState("")
+  const [email,setMail] = useState("")
   const [password,setPassword] = useState("")
+  
+  let backendUrl = "http://localhost:5000"
+
+  const navigate = useNavigate()
+
+  
+  const login = async(e)=>{
+    console.log("inside login function")
+      e.preventDefault();
+      try {
+        axios.defaults.withCredentials = true;
+        const {data} = await axios.post(backendUrl + '/api/user/login',{
+          email,password
+        })
+        console.log(email,password)
+        // console.log(data)
+        navigate('/')
+      } catch (error) {
+        toast.error(error.message)
+      }
+  }
+
+  const register = async(e)=>{
+    console.log("inside signup function");
+    e.preventDefault()
+    try {
+      const {data} = await axios.post(backendUrl + "/api/user/register",{
+        name, email, password
+      })
+      console.log(data),
+      toast.success(data.message)
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
 
 
   return (
     <div className='text-white min-h-screen h-[100%] bg-gradient-to-t from-black to-sky-200 flex justify-center items-center overflow-y-auto'>
       <form className='w-[25%]  py-10 flex flex-col  items-center gap-5 rounded-xl bg-gray-700'>
        {currState == "Sign Up" ? <input className='border p-3 rounded-md w-85' placeholder='User Name' onChange={(e)=>{setName(e.target.value)}} value={name} type="text" /> : ""} 
-        <input className='border p-3 rounded-md w-85' placeholder='Email' onChange={(e)=>{setMail(e.target.value)}} value={mail} type="mail" />
+        <input className='border p-3 rounded-md w-85' placeholder='Email' onChange={(e)=>{setMail(e.target.value)}} value={email} type="mail" />
         <input className='border p-3 rounded-md w-85' placeholder='Password' onChange={(e)=>{setPassword(e.target.value)}} value={password} type="password" />
 
-        {currState=="Sign Up" ? <p>Already have an account <span className='text-blue-400'>Login</span></p> : <p>Create a New Account <span  className='text-blue-400'>Sign Up</span></p>}
+      {currState === 'Sign Up' ? (
+          <p className="text-gray-400 text-center text-xs mt-4">Already have an account {' '}
+            <span onClick={() => setCurrState("Login")} className="text-blue-400 cursor-pointer underline">Login here</span>
+          </p>
+        ) : (
+          <p className="text-gray-400 text-center text-xs mt-4">Don't have an account {' '}
+            <span onClick={() => setCurrState("Sign Up")} className="text-blue-400 cursor-pointer underline">Sign up</span>
+          </p>
+        )}
 
-        <button className="border text-center px-15 mt-5 font-semibold text-xl font-sans bg-gray-900 text-white py-2 rounded-full">{currState=="Sign Up" ? "Sign Up" : "Login"}</button>
+        <button onClick={currState == "Sign Up" ? register:login} className="border text-center px-15 mt-5 font-semibold text-xl font-sans bg-gray-900 text-white py-2 rounded-full">{currState=="Sign Up" ? "Sign Up" : "Login"}</button>
 
       </form>
     </div>
