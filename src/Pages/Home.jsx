@@ -8,13 +8,9 @@ function Home() {
   const [loading,setLoading] = useState(true)
 
   useEffect(()=>{
-   if (data) {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }
+  if (data !== undefined) {
+  setLoading(false);
+}
   },[data])
 
 return (
