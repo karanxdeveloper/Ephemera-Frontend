@@ -37,7 +37,7 @@ function Create() {
                         </div>
 
                     </div>
-                    <input onChange={(e) => { setTitle(e.target.value) }} value={title} className="border-none text-center w-[25%] text-white px-3 py-1 font-semibold font-sans rounded-xl" type="text" placeholder='Title' />
+                    <input onChange={(e) => { setTitle(e.target.value) }} value={title} className="border-none text-center w-[75%] sm:w-[25%] text-white px-3 py-1 font-semibold font-sans rounded-xl" type="text" placeholder='Title' />
                     <button onClick={(e)=>CreatePost(e)} className="border text-center px-15 mt-5 font-semibold text-2xl font-sans bg-black text-white py-2 rounded-full">Post</button>
                 </form>
             </div>

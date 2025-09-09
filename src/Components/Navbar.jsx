@@ -1,7 +1,5 @@
-import axios from 'axios'
-import React, { useContext, useEffect, useState } from 'react'
+import  { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
 import { AppContext } from '../Context/AppContext'
 
 function Navbar() {
@@ -12,8 +10,8 @@ function Navbar() {
 
   return (
     <div className='flex w-full bg-gradient-to-t from-sky-200 to-black justify-center'>
-      <div className='flex justify-around items-center w-[80%] text-white p-2'>
-        <img onClick={() => navigate("/")} className='w-15 h-15 rounded-full' src="https://static.vecteezy.com/system/resources/thumbnails/025/221/284/small_2x/picture-a-captivating-scene-of-a-tranquil-lake-at-sunset-ai-generative-photo.jpg" alt="" />
+      <div className='flex justify-between items-center w-[90%] text-white p-2 sm:justify-around sm:w-[80%]'>
+        <img onClick={() => navigate("/")} className='w-10 h-10 sm:w-15 sm:h-15 rounded-full' src="https://static.vecteezy.com/system/resources/thumbnails/025/221/284/small_2x/picture-a-captivating-scene-of-a-tranquil-lake-at-sunset-ai-generative-photo.jpg" alt="" />
         <ul className='flex gap-6 font-semibold text-xl '>
           <li onClick={() => navigate("/")} className='cursor-pointer'>Home</li>
           <li onClick={() => navigate("/create")} className='cursor-pointer'>Create</li>
@@ -25,8 +23,8 @@ function Navbar() {
           {userData.name[0].toUpperCase()}
           <div className={`absolute ${menuToggle ? "block" : "hidden"}  top-0 right-0 z-10 text-black
           rounded pt-10`}>
-            <ul className="list-none w-[15vw] m-0 p-4 bg-gray-100 rounded-xl text-sm">
-              <li onClick={() => logout()} className="py-2 px-2 text-[18px] rounded-xl hover:bg-gray-200 cursor-pointer pr-6">Logout</li>
+            <ul className="list-none w-[20vw] sm:w-[15vw] m-1 sm:m-0 p-4 bg-gray-100 rounded-xl text-sm">
+              <li onClick={() => logout()} className="text-center  text-[14px] sm:text-[18px] sm:py-2 sm:px-2 rounded-xl hover:bg-gray-200 cursor-pointer pr-6">Logout</li>
             </ul>
           </div>
         </div> :

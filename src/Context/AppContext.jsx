@@ -7,7 +7,7 @@ export const AppContext = createContext()
 
 export const AppContextProvider = (props) => {
 
-    let backendUrl = "http://localhost:5000"
+    let backendUrl = import.meta.env.VITE_BACKEND_URL
     axios.defaults.withCredentials = true
 
     const [data, setData] = useState([])
@@ -129,6 +129,7 @@ export const AppContextProvider = (props) => {
 
     useEffect(()=>{
         getUserData(),fetchData()
+        console.log(backendUrl)
     },[])
 
 
