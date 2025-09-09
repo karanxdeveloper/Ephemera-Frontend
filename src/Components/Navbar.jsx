@@ -1,47 +1,14 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { AppContext } from '../Context/AppContext'
 
 function Navbar() {
 
-  const navigate = useNavigate()
-  const [menuToggle, setMenuToggle] = useState(false)
+  const {userData,setMenuToggle,menuToggle,logout} = useContext(AppContext)
 
-  const [userData, setUserData] = useState(null)
-
-  let backendUrl = "http://localhost:5000"
-
-  const getUserData = async () => {
-    try {
-      axios.defaults.withCredentials = true
-
-      const { data } = await axios.post(backendUrl + '/api/user/userData')
-      console.log(data)
-      console.log(data.user)
-      setUserData(data.user)
-    } catch (error) {
-      toast.error(error.message)
-    }
-  }
-
-
-  const logout = async ()=>{
-    try {
-      axios.defaults.withCredentials = true;
-
-      const {data} = await axios.post(backendUrl + "/api/user/logout")
-      console.log(data.message)
-      setUserData(null)
-      navigate("/login")
-    } catch (error) {
-      
-    }
-  }
-
-  useEffect(() => {
-    getUserData()
-  }, [])
+  const navigate= useNavigate()
 
   return (
     <div className='flex w-full bg-gradient-to-t from-sky-200 to-black justify-center'>
@@ -51,7 +18,6 @@ function Navbar() {
           <li onClick={() => navigate("/")} className='cursor-pointer'>Home</li>
           <li onClick={() => navigate("/create")} className='cursor-pointer'>Create</li>
           <li onClick={() => navigate("/About")} className='cursor-pointer'>About</li>
-          <li className='cursor-pointer'>Subscribe</li>
         </ul>
 
         {userData ? <div onClick={() => setMenuToggle(!menuToggle)}

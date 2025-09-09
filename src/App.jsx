@@ -1,11 +1,13 @@
 
+import { lazy, Suspense } from 'react';
 import Navbar from './Components/Navbar'
-import Home from './Pages/Home'
-import Create from './Pages/Create'
 import { Route, Routes } from 'react-router-dom'
-import Login from './Pages/Login'
-import About from './Pages/About'
-import { Toaster } from 'react-hot-toast'
+import { ToastContainer } from 'react-toastify'
+
+const Home = lazy(() => import('./Pages/Home'));
+const Create = lazy(() => import('./Pages/Create'));
+const Login = lazy(() => import('./Pages/Login'));
+const About = lazy(() => import('./Pages/About'));
 
 function App() {
 
@@ -14,13 +16,21 @@ function App() {
     <div className='bg-gradient-to-t from-black to-sky-200 bg-contain h-screen'>
 
     <Navbar/>
-    <Toaster/>
+    <ToastContainer/>
+    <Suspense
+          fallback={
+            <div className="flex justify-center items-center h-screen">
+             <div className="w-12 h-12 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
+            </div>
+          }
+        >
     <Routes>
       <Route path='/' element={<Home/>}/>
       <Route path='/login' element={<Login/>}/>
       <Route path='/create' element={<Create/>}/>
       <Route path='/About' element={<About/>}/>
     </Routes>
+    </Suspense>
     </div>
       
     </>

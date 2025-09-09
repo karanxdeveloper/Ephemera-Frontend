@@ -1,56 +1,9 @@
-import axios from "axios"
-import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { toast } from "react-toastify"
+import { useContext } from "react"
+import { AppContext } from "../Context/AppContext"
 
 function Create() {
 
-    const [image, setSelectedImage] = useState(null)
-    const [title, setTitle] = useState("")
-    const [expiresIn, setTime] = useState("")
-    const [time1, setTime1] = useState(false)
-    const [time2, setTime2] = useState(false)
-    const [time3, setTime3] = useState(false)
-    let backendUrl = "http://localhost:5000"
-
-    const navigate = useNavigate()
-
-
-    const CreatePost = async (e) => {
-        console.log(title, expiresIn, image)
-        e.preventDefault()
-
-        if (!image || !(image instanceof Blob)) {
-            toast.error("Please select a valid image file")
-            return
-        }
-
-        try {
-            const formData = new FormData()
-            formData.append("title", title)
-            formData.append("expiresIn", expiresIn)
-            formData.append("content", image) // must match multer field name
-
-            const { data } = await axios.post(backendUrl + '/api/post/create', formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                },
-                withCredentials: true
-            })
-
-            console.log(data)
-            toast.success("Post created successfully!")
-            navigate("/")
-        } catch (error) {
-            toast.error(error.message)
-        }
-    }
-
-
-
-    useEffect(() => {
-        console.log(expiresIn)
-    }, [expiresIn])
+     const {image,setSelectedImage,setTime,setTitle,title,expiresIn,CreatePost} = useContext(AppContext)
 
     return (
         <div className="bg-gradient-to-t from-black to-sky-200 w-full h-screen flex justify-center ">
@@ -78,14 +31,14 @@ function Create() {
                                     className={`border cursor-pointer px-5 rounded-full 
                   ${expiresIn === time ? "bg-blue-500 text-white" : "bg-white"}`}
                                 >
-                                    {time / 60}h
+                                    {time / 60} minutes
                                 </p>
                             ))}
                         </div>
 
                     </div>
                     <input onChange={(e) => { setTitle(e.target.value) }} value={title} className="border-none text-center w-[25%] text-white px-3 py-1 font-semibold font-sans rounded-xl" type="text" placeholder='Title' />
-                    <button onClick={CreatePost} className="border text-center px-15 mt-5 font-semibold text-2xl font-sans bg-black text-white py-2 rounded-full">Post</button>
+                    <button onClick={(e)=>CreatePost(e)} className="border text-center px-15 mt-5 font-semibold text-2xl font-sans bg-black text-white py-2 rounded-full">Post</button>
                 </form>
             </div>
         </div>

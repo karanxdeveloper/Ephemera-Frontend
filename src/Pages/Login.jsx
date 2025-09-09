@@ -1,49 +1,10 @@
-import axios from 'axios'
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
+
+import { useContext } from 'react'
+import { AppContext } from '../Context/AppContext'
 
 function Login() {
-
-  const [currState,setCurrState] = useState("Sign Up")
-  const [name,setName] = useState("")
-  const [email,setMail] = useState("")
-  const [password,setPassword] = useState("")
   
-  let backendUrl = "http://localhost:5000"
-
-  const navigate = useNavigate()
-
-  
-  const login = async(e)=>{
-    console.log("inside login function")
-      e.preventDefault();
-      try {
-        axios.defaults.withCredentials = true;
-        const {data} = await axios.post(backendUrl + '/api/user/login',{
-          email,password
-        })
-        console.log(email,password)
-        // console.log(data)
-        navigate('/')
-      } catch (error) {
-        toast.error(error.message)
-      }
-  }
-
-  const register = async(e)=>{
-    console.log("inside signup function");
-    e.preventDefault()
-    try {
-      const {data} = await axios.post(backendUrl + "/api/user/register",{
-        name, email, password
-      })
-      console.log(data),
-      toast.success(data.message)
-    } catch (error) {
-      toast.error(error.message)
-    }
-  }
+  const {currState,setName,setMail,setPassword,name,email,password,setCurrState,register,login} = useContext(AppContext)
 
 
   return (

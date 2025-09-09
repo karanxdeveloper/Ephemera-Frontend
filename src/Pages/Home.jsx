@@ -1,27 +1,39 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import  { useContext, useEffect, useState } from 'react'
+import { AppContext } from '../Context/AppContext'
+
 
 function Home() {
 
-    const [data, setData] = useState([])
+  const {data} = useContext(AppContext)
+  const [loading,setLoading] = useState(true)
 
-    let backendUrl = "http://localhost:5000"
+  useEffect(()=>{
+   if (data) {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
 
-    const fetchData = async () => {
-        axios.defaults.withCredentials = true
-        const response = await axios.get(backendUrl + '/api/post/data')
-        // console.log(response)
-        setData(response.data.posts)
-    }
-
-    useEffect(() => {
-        fetchData()
-    }, [])
+    return () => clearTimeout(timer);
+  }
+  },[data])
 
 return (
   <div className='bg-gradient-to-t from-black to-sky-200 min-h-screen flex justify-center'>
     <div className='w-[80%] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-2 text-white'>
-      {!data || data.length === 0 === 0 ? (
+      {loading ? (
+          Array.from({ length: 12 }).map((_, i) => (
+            <div
+              key={i}
+              className="bg-gray-800 h-[280px] rounded-lg overflow-hidden shadow-md flex items-center justify-center"
+            >
+              <img 
+                src="/stickman-loading.gif"
+                alt="Loading..."
+                className="w-[80%] h-[80%] rounded-full"
+              />
+            </div>
+          ))
+        ) : !data || data.length === 0 ? (
         <p className="text-center text-white text-xl">No posts available yet.</p>
       ) : (
         data.map((post) => (
