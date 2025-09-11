@@ -1,20 +1,28 @@
 import  { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../Context/AppContext'
+import { useLocation } from 'react-router-dom';
 
 
 function Home() {
 
+   const {fetchData} = useContext(AppContext)
+
   const {data} = useContext(AppContext)
   const [loading,setLoading] = useState(true)
+  const location = useLocation();
+
+  useEffect(() => {
+    fetchData(); // re-fetch whenever location changes
+  }, [location]);
 
   useEffect(()=>{
-  if (data !== undefined) {
+  if (data && !undefined) {
   setLoading(false);
 }
   },[data])
 
 return (
-  <div className='bg-gradient-to-t from-black to-sky-200 min-h-screen flex justify-center'>
+  <div className='bg-black min-h-screen flex justify-center'>
     <div className='w-[80%] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-2 text-white'>
       {loading ? (
           Array.from({ length: 12 }).map((_, i) => (
@@ -30,7 +38,7 @@ return (
             </div>
           ))
         ) : !data || data.length === 0 ? (
-        <p className="text-center text-white text-xl">No posts available yet.</p>
+        <p className="text-center w-[82vw] flex justify-center items-center text-white text-xl">No posts available yet.</p>
       ) : (
         data.map((post) => (
           <div key={post._id} className='bg-gray-800 h-[280px] rounded-lg overflow-hidden shadow-md'>

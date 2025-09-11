@@ -9,9 +9,9 @@ function Navbar() {
   const navigate= useNavigate()
 
   return (
-    <div className='flex w-full bg-gradient-to-t from-sky-200 to-black justify-center'>
+    <div className='flex w-full bg-black justify-center'>
       <div className='flex justify-between items-center w-[90%] text-white p-2 sm:justify-around sm:w-[80%]'>
-        <img onClick={() => navigate("/")} className='w-10 h-10 sm:w-15 sm:h-15 rounded-full' src="https://static.vecteezy.com/system/resources/thumbnails/025/221/284/small_2x/picture-a-captivating-scene-of-a-tranquil-lake-at-sunset-ai-generative-photo.jpg" alt="" />
+       <h1 onClick={() => navigate("/")} className='text-xl text-blue-500 font-sans font-semibold'>EPHEMERA</h1>
         <ul className='flex gap-6 font-semibold text-xl '>
           <li onClick={() => navigate("/")} className='cursor-pointer'>Home</li>
           <li onClick={() => navigate("/create")} className='cursor-pointer'>Create</li>

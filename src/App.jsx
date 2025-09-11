@@ -13,7 +13,7 @@ function App() {
 
   return (
     <>
-    <div className='bg-gradient-to-t from-black to-sky-200 bg-contain h-screen'>
+    <div className='bg-black bg-contain h-screen'>
 
     <Navbar/>
     <ToastContainer/>

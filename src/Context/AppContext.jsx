@@ -95,6 +95,7 @@ export const AppContextProvider = (props) => {
             })
             console.log(data),
                 toast.success(data.message)
+                navigate('/')
         } catch (error) {
             toast.error(error.message)
         }
