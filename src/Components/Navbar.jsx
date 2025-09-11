@@ -10,16 +10,16 @@ function Navbar() {
 
   return (
     <div className='flex w-full bg-black justify-center'>
-      <div className='flex justify-between items-center w-[90%] text-white p-2 sm:justify-around sm:w-[80%]'>
-       <h1 onClick={() => navigate("/")} className='text-xl text-blue-500 font-sans font-semibold'>EPHEMERA</h1>
+      <div className='flex justify-between items-center w-[95%] text-white p-2 sm:justify-around sm:w-[80%]'>
+       <h1 onClick={() => navigate("/")} className='text-[15px] text-blue-500 font-sans font-semibold'>EPHEMERA</h1>
         <ul className='flex gap-6 font-semibold text-xl '>
-          <li onClick={() => navigate("/")} className='cursor-pointer'>Home</li>
-          <li onClick={() => navigate("/create")} className='cursor-pointer'>Create</li>
-          <li onClick={() => navigate("/About")} className='cursor-pointer'>About</li>
+          <li onClick={() => navigate("/")} className='cursor-pointer text-[15px]'>Home</li>
+          <li onClick={() => navigate("/create")} className='cursor-pointer text-[15px]'>Create</li>
+          <li onClick={() => navigate("/About")} className='cursor-pointer text-[15px]'>About</li>
         </ul>
 
         {userData ? <div onClick={() => setMenuToggle(!menuToggle)}
-          className='w-10 h-10 flex justify-center items-center rounded-full border relative bg-white text-black font-semibold text-xl'>
+          className='w-8 h-8 flex justify-center items-center rounded-full border relative bg-white text-black font-semibold text-[14px]'>
           {userData.name[0].toUpperCase()}
           <div className={`absolute ${menuToggle ? "block" : "hidden"}  top-0 right-0 z-10 text-black
           rounded pt-10`}>
@@ -28,7 +28,7 @@ function Navbar() {
             </ul>
           </div>
         </div> :
-          <button onClick={()=>navigate("/login")} className='p-3 py-1 border-none focus:outline-none bg-white text-black rounded-full font-semibold text-lg'>Login</button>}
+          <button onClick={()=>navigate("/login")} className='p-3 py-1 border-none focus:outline-none bg-white text-black rounded-full font-semibold text-[14px]'>Login</button>}
 
       </div>
     </div>
