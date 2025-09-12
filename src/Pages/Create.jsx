@@ -9,7 +9,7 @@ function Create() {
         <div className="bg-black w-full h-screen flex justify-center ">
             <div className="w-[80%] h-[80%] rounded-md bg-transparent mt-15 flex justify-center items-center">
                 <form className="flex flex-col w-[85%] h-[90%] gap-3 p-5 items-center justify-center">
-                    <h3 className="font-semibold text-2xl  font-sans">New Post</h3>
+                    <h3 className="font-semibold text-2xl select-none text-white  font-sans">New Post</h3>
                     <div className="w-full sm:w-[60%] flex justify-center items-center border rounded-md overflow-hidden">
                         <img
                             className="max-h-[500px] w-auto h-auto object-contain rounded-md"
