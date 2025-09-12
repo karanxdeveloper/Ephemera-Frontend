@@ -59,7 +59,7 @@ function Home() {
         `}
       </style>
       <div className="bg-black min-h-screen flex justify-center">
-        <div className="w-[80%] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-2 text-white">
+        <div className="w-[80%] grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 p-2 text-white">
           {loading ? (
             Array.from({ length: 12 }).map((_, i) => (
               <div
@@ -83,16 +83,14 @@ function Home() {
             posts.map((post) => (
               <div
                 key={post._id}
-                className="bg-gray-800 h-[280px] rounded-lg overflow-hidden shadow-md"
+                className="w-[95%] sm:w-[80%] "
               >
                 <img
                   src={post.content}
                   alt={post.title}
-                  className="w-full h-48 object-cover"
+                  className="max-h-[500px] w-auto h-auto object-contain rounded-md"
                 />
-                <div className="p-4">
-                  <h2 className="text-lg font-semibold">{post.title}</h2>
-                </div>
+                
               </div>
             ))
           )}
