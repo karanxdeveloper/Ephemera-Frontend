@@ -25,6 +25,8 @@ export const AppContextProvider = (props) => {
 
     const [menuToggle,setMenuToggle] = useState(false)
 
+    const [loading, setLoading] = useState(true);
+
     const navigate = useNavigate()
 
 
@@ -161,7 +163,9 @@ export const AppContextProvider = (props) => {
         title,
         expiresIn,
         menuToggle,
-        setMenuToggle
+        setMenuToggle,
+        loading,
+        setLoading
 
     }
 
