@@ -23,12 +23,12 @@ function Create() {
                         <input onChange={(e) => { setSelectedImage(e.target.files[0]) }} className="font-semibold text-white  text-center text-xl" type="file" id='post' accept='.png, .jpg, .jpeg' />
                         
 
-                        <div className="flex gap-5 mt-2 text-center justify-center w-[100%]">
-                            {[120, 240, 360].map((time) => (
+                        <div className="flex gap-5 mt-2 text-center justify-center select-none w-[100%]">
+                            {[120, 240, 600].map((time) => (
                                 <p
                                     key={time}
                                     onClick={() => setTime(time)}
-                                    className={`border cursor-pointer px-5 rounded-full 
+                                    className={`border cursor-pointer select-none px-5 rounded-full 
                   ${expiresIn === time ? "bg-blue-500 text-white" : "bg-white"}`}
                                 >
                                     {time / 60} minutes
@@ -38,7 +38,7 @@ function Create() {
 
                     </div>
                     <input onChange={(e) => { setTitle(e.target.value) }} value={title} className="border-none text-center w-[75%] sm:w-[25%] text-white px-3 py-1 font-semibold font-sans rounded-xl" type="text" placeholder='Title' />
-                    <button onClick={(e)=>CreatePost(e)} className="border text-center px-15 mt-5 font-semibold text-2xl font-sans bg-black text-white py-2 rounded-full">Post</button>
+                    <button onClick={(e)=>CreatePost(e)} className="border select-none text-center px-15 mt-5 font-semibold text-2xl font-sans bg-black text-white py-2 rounded-full">Post</button>
                 </form>
             </div>
         </div>

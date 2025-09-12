@@ -58,8 +58,8 @@ function Home() {
           }
         `}
       </style>
-      <div className="bg-black min-h-screen flex justify-center">
-        <div className="w-[80%] grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 p-2 text-white">
+      <div className=" min-h-screen bg-black flex justify-center">
+        <div className="w-[100%] sm:w-[85%]  grid grid-cols-1 sm:grid-cols-1 p-3 text-white">
           {loading ? (
             Array.from({ length: 12 }).map((_, i) => (
               <div
@@ -80,19 +80,21 @@ function Home() {
               No posts available yet.
             </p>
           ) : (
-            posts.map((post) => (
+            <div className="flex justify-center ">
+            <div className="columns-2 sm:columns-4 gap-2 w-[100%] sm:w-[90%] ">
+            {posts.map((post) => (
               <div
                 key={post._id}
-                className="w-[95%] sm:w-[80%] "
+                className=" mb-4  break-inside-avoid "
               >
                 <img
                   src={post.content}
                   alt={post.title}
-                  className="max-h-[500px] w-auto h-auto object-contain rounded-md"
+                  className="w-full h-auto object-contain rounded-xl bg-black"
                 />
                 
               </div>
-            ))
+            ))}</div></div>
           )}
         </div>
       </div>
