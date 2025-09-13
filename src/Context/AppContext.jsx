@@ -27,6 +27,10 @@ export const AppContextProvider = (props) => {
 
     const [loading, setLoading] = useState(true);
 
+    const [loginLoading,setLoginLoading] = useState(null)
+
+    const  [createLoading,setCreateLoading] = useState(null)
+
     const navigate = useNavigate()
 
 
@@ -39,7 +43,7 @@ export const AppContextProvider = (props) => {
 
 
     const CreatePost = async (e) => { // to create post
-        console.log(title, expiresIn, image)
+        setCreateLoading(true)
         e.preventDefault()
 
         if (!image || !(image instanceof Blob)) {
@@ -62,42 +66,50 @@ export const AppContextProvider = (props) => {
                 withCredentials: true
             })
 
-            console.log(data)
+            setCreateLoading(false)
             toast.success("Post created successfully!")
             navigate("/")
+            
+            setSelectedImage(null)
+            setTitle("")
+            setTime("")
         } catch (error) {
             toast.error(error.message)
         }
     }
 
     const login = async (e) => { //login function
-        console.log("inside login function")
-        console.log(email,password)
+        setLoginLoading(true)
         e.preventDefault();
         try {
             axios.defaults.withCredentials = true;
             const { data } = await axios.post(backendUrl + '/api/user/login', {
                 email, password
             })
-            console.log(email, password)
+            setLoginLoading(false)
             getUserData()
-            // console.log(data)
             navigate('/')
+            setMail("")
+            setPassword("")
         } catch (error) {
             toast.error(error.message)
         }
     }
 
     const register = async (e) => { //register function
-        console.log("inside signup function");
+       setLoginLoading(true)
         e.preventDefault()
         try {
             const { data } = await axios.post(backendUrl + "/api/user/register", {
                 name, email, password
             })
-            console.log(data),
+            
                 toast.success(data.message)
+                setLoginLoading(false)
                 navigate('/')
+                setMail("")
+            setPassword("")
+            setName("")
         } catch (error) {
             toast.error(error.message)
         }
@@ -165,7 +177,11 @@ export const AppContextProvider = (props) => {
         menuToggle,
         setMenuToggle,
         loading,
-        setLoading
+        setLoading,
+        loginLoading,
+        setLoginLoading,
+        createLoading,
+        setCreateLoading
 
     }
 
