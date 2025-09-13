@@ -31,13 +31,19 @@ export const AppContextProvider = (props) => {
 
     const  [createLoading,setCreateLoading] = useState(null)
 
+    const [viewPost,setViewPost] = useState(null)
+    const [viewPostTitle,setViewPostTitle] = useState("")
+
+    const [postUser,setPostUser] = useState("")
+
+     const [posts, setPosts] = useState([]);
+
     const navigate = useNavigate()
 
 
     const fetchData = async () => { //fetch the post data
         axios.defaults.withCredentials = true
         const response = await axios.get(backendUrl + '/api/post/data')
-        // console.log(response)
         setData(response.data.posts)
     }
 
@@ -57,7 +63,6 @@ export const AppContextProvider = (props) => {
             formData.append("expiresIn", expiresIn)
             formData.append("content", image)
 
-            console.log(formData)
 
             const { data } = await axios.post(backendUrl + '/api/post/create', formData, {
                 headers: {
@@ -120,8 +125,7 @@ export const AppContextProvider = (props) => {
            
 
             const { data } = await axios.post(backendUrl + '/api/user/userData')
-            console.log(data)
-            console.log(data.user)
+
             setUserData(data.user)
         } catch (error) {
             toast.error(error.message)
@@ -134,7 +138,6 @@ export const AppContextProvider = (props) => {
             axios.defaults.withCredentials = true;
 
             const { data } = await axios.post(backendUrl + "/api/user/logout")
-            console.log(data.message)
             setUserData(null)
             navigate("/login")
         } catch (error) {
@@ -142,9 +145,27 @@ export const AppContextProvider = (props) => {
         }
     }
 
+    const openImage = async (id)=>{ // to get the single post 
+      
+        try {
+            if(id){
+                
+                const {data} = await axios.get(backendUrl + "/api/post/single-post",{
+                    params: { postId: id }
+                })
+                setViewPost(data.post.content)
+                setViewPostTitle(data.post.title)
+                setPostUser(data.post.user.name)
+                
+            }
+
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
     useEffect(()=>{
         getUserData(),fetchData()
-        console.log(backendUrl)
     },[])
 
 
@@ -181,7 +202,13 @@ export const AppContextProvider = (props) => {
         loginLoading,
         setLoginLoading,
         createLoading,
-        setCreateLoading
+        setCreateLoading,
+        openImage,
+        viewPost,
+        viewPostTitle,
+        postUser,
+        posts,
+        setPosts
 
     }
 

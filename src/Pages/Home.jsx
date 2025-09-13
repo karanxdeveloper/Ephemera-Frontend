@@ -1,12 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../Context/AppContext";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function Home() {
-  const { fetchData, data,loading,setLoading } = useContext(AppContext);
+  const { fetchData, data,loading,setLoading,openImage,posts,setPosts } = useContext(AppContext);
   
-  const [posts, setPosts] = useState([]);
+ 
   const location = useLocation();
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     setLoading(true)
@@ -85,7 +87,8 @@ function Home() {
                 {posts.map((post) => (
                   <div
                     key={post._id}
-                    className=" mb-4  break-inside-avoid "
+                    onClick={()=>{navigate(`/view/${post._id}`);}}
+                    className=" mb-4 break-inside-avoid "
                   >
                     <img
                       src={post.content}
