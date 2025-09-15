@@ -23,20 +23,26 @@ export const AppContextProvider = (props) => {
 
     const [userData, setUserData] = useState(null)
 
-    const [menuToggle,setMenuToggle] = useState(false)
+    const [menuToggle, setMenuToggle] = useState(false)
 
     const [loading, setLoading] = useState(true);
 
-    const [loginLoading,setLoginLoading] = useState(null)
+    const [loginLoading, setLoginLoading] = useState(null)
 
-    const  [createLoading,setCreateLoading] = useState(null)
+    const [createLoading, setCreateLoading] = useState(null)
 
-    const [viewPost,setViewPost] = useState(null)
-    const [viewPostTitle,setViewPostTitle] = useState("")
+    const [viewPost, setViewPost] = useState(null)
+    const [viewPostTitle, setViewPostTitle] = useState("")
 
-    const [postUser,setPostUser] = useState("")
+    const [postUser, setPostUser] = useState("")
 
-     const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState([]);
+
+    const [isVerified, setIsVerified] = useState(null)
+
+    const [otp,setOtp]= useState("")
+
+    const [otpLoading,setOtpLoading] = useState(false)
 
     const navigate = useNavigate()
 
@@ -74,7 +80,7 @@ export const AppContextProvider = (props) => {
             setCreateLoading(false)
             toast.success("Post created successfully!")
             navigate("/")
-            
+
             setSelectedImage(null)
             setTitle("")
             setTime("")
@@ -91,6 +97,7 @@ export const AppContextProvider = (props) => {
             const { data } = await axios.post(backendUrl + '/api/user/login', {
                 email, password
             })
+            isAccountVerified()
             setLoginLoading(false)
             getUserData()
             navigate('/')
@@ -102,17 +109,18 @@ export const AppContextProvider = (props) => {
     }
 
     const register = async (e) => { //register function
-       setLoginLoading(true)
+        setLoginLoading(true)
         e.preventDefault()
         try {
             const { data } = await axios.post(backendUrl + "/api/user/register", {
                 name, email, password
             })
-            
-                toast.success(data.message)
-                setLoginLoading(false)
-                navigate('/')
-                setMail("")
+
+            toast.success(data.message)
+            isAccountVerified()
+            setLoginLoading(false)
+            navigate('/')
+            setMail("")
             setPassword("")
             setName("")
         } catch (error) {
@@ -122,7 +130,7 @@ export const AppContextProvider = (props) => {
 
     const getUserData = async () => { // get user logged In user data
         try {
-           
+
 
             const { data } = await axios.post(backendUrl + '/api/user/userData')
 
@@ -145,18 +153,18 @@ export const AppContextProvider = (props) => {
         }
     }
 
-    const openImage = async (id)=>{ // to get the single post 
-      
+    const openImage = async (id) => { // to get the single post 
+
         try {
-            if(id){
-                
-                const {data} = await axios.get(backendUrl + "/api/post/single-post",{
+            if (id) {
+
+                const { data } = await axios.get(backendUrl + "/api/post/single-post", {
                     params: { postId: id }
                 })
                 setViewPost(data.post.content)
                 setViewPostTitle(data.post.title)
                 setPostUser(data.post.user.name)
-                
+
             }
 
         } catch (error) {
@@ -164,9 +172,54 @@ export const AppContextProvider = (props) => {
         }
     }
 
-    useEffect(()=>{
-        getUserData(),fetchData()
-    },[])
+    const isAccountVerified = async () => {
+        try {
+            const { data } = await axios.post(backendUrl + "/api/user/isVerified");
+            setIsVerified(data.success);
+
+        } catch (error) {
+            toast.error(error.message);
+        }
+    };
+
+    const sendVerificationOtp = async()=>{
+        try {
+            setOtpLoading(true)
+            const {data} = await axios.post(backendUrl + "/api/user/verify-MailOtp")
+            console.log(data)
+            if(data.success){
+                setOtpLoading(false)
+                navigate("/VerifyAccount")
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
+    const verifyOtp = async(e)=>{
+        e.preventDefault()
+        try {
+            setOtpLoading(true)
+            const {data}= await axios.post(backendUrl + "/api/user/verify-Mail",{
+                otp
+            })
+
+            console.log(data)
+            if(data.success){
+                isAccountVerified()
+                setOtpLoading(false)
+                navigate("/")
+            }
+            toast.success(data.success)
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
+
+    useEffect(() => {
+        getUserData(), fetchData(), isAccountVerified()
+    }, [])
 
 
 
@@ -208,7 +261,15 @@ export const AppContextProvider = (props) => {
         viewPostTitle,
         postUser,
         posts,
-        setPosts
+        setPosts,
+        isVerified,
+        sendVerificationOtp,
+        setOtp,
+        otp,
+        verifyOtp,
+        otpLoading,
+        setOtpLoading,
+        isAccountVerified
 
     }
 

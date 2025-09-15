@@ -11,7 +11,7 @@ function Login() {
 
   return (
     <div className='text-white min-h-screen h-[100%] bg-black flex justify-center items-center overflow-y-auto'>
-      <form className='w-[95%] sm:w-[25%]  py-10 flex flex-col  items-center gap-5 rounded-xl bg-gray-700'>
+      <form className='w-[95%] sm:w-[60%] lg:w-[40%] xl:w-[29%]  py-10 flex flex-col  items-center gap-5 rounded-xl bg-gray-700 md:w-[48%] 2xl:w-[24%]'>
         {currState == "Sign Up" ? <input className='border p-3 rounded-md w-85' placeholder='User Name' onChange={(e) => { setName(e.target.value) }} value={name} type="text" /> : ""}
         <input className='border p-3 rounded-md w-85' placeholder='Email' onChange={(e) => { setMail(e.target.value) }} value={email} type="mail" />
         <input className='border p-3 rounded-md w-85' placeholder='Password' onChange={(e) => { setPassword(e.target.value) }} value={password} type="password" />

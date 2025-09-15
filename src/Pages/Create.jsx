@@ -3,9 +3,9 @@ import { AppContext } from "../Context/AppContext"
 
 function Create() {
 
-    const { image, setSelectedImage, setTime, setTitle, title, expiresIn, CreatePost, createLoading } = useContext(AppContext)
+    const { image, setSelectedImage, setTime, setTitle, title, expiresIn, CreatePost, createLoading,isVerified } = useContext(AppContext)
 
-    return (
+    return isVerified ? (
         <div className="bg-black w-full h-screen flex justify-center ">
             <div className="w-[80%] h-[80%] rounded-md bg-transparent mt-15 flex justify-center items-center">
                 <form className="flex flex-col w-[85%] h-[90%] gap-3 p-5 items-center justify-center">
@@ -43,7 +43,7 @@ function Create() {
                 </form>
             </div>
         </div>
-    )
+    ) : (<h1 className="w-full min-h-screen flex justify-center items-center text-xl text-white">Please verifiy your account to create your first post</h1>)
 }
 
 export default Create

@@ -4,7 +4,7 @@ import { AppContext } from '../Context/AppContext'
 
 function Navbar() {
 
-  const {userData,setMenuToggle,menuToggle,logout} = useContext(AppContext)
+  const {userData,setMenuToggle,menuToggle,logout,sendVerificationOtp,otpLoading,isVerified} = useContext(AppContext)
 
   const navigate= useNavigate()
 
@@ -25,10 +25,12 @@ function Navbar() {
           rounded pt-10`}>
             <ul className="list-none w-[20vw] sm:w-[15vw] m-1 sm:m-0 p-4 bg-gray-100 rounded-xl text-sm">
               <li onClick={() => logout()} className="text-center select-none text-[14px]  sm:text-[20px] sm:py-2 sm:px-2 rounded-xl hover:bg-gray-200 cursor-pointer pr-6">Logout</li>
+           {otpLoading ? <div className="flex justify-center items-center"><div className=" text-center w-8 border-black h-8 rounded-full border-4 border-t-transparent animate-spin"></div></div> 
+           : <li onClick={()=>sendVerificationOtp()}  className={`text-center select-none text-[14px] ${isVerified ? "hidden" : "block"}  sm:text-[20px] sm:py-2 sm:px-2 rounded-xl hover:bg-gray-200 cursor-pointer pr-6`}>Verify Account</li>}   
             </ul>
           </div>
         </div> :
-          <button onClick={()=>navigate("/login")} className='p-3 select-none py-1 border-none focus:outline-none bg-white text-black rounded-full font-semibold text-lg '>Login</button>}
+          <button onClick={()=>navigate("/login")} className='p-3 select-none py-1 border-none focus:outline-none bg-white text-black rounded-full font-semibold '>Login</button>}
 
       </div>
     </div>
