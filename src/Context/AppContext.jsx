@@ -40,9 +40,11 @@ export const AppContextProvider = (props) => {
 
     const [isVerified, setIsVerified] = useState(null)
 
-    const [otp,setOtp]= useState("")
+    const [otp, setOtp] = useState("")
 
-    const [otpLoading,setOtpLoading] = useState(false)
+    const [otpLoading, setOtpLoading] = useState(false)
+
+    const [tags, setTags] = useState([]);
 
     const navigate = useNavigate()
 
@@ -51,6 +53,7 @@ export const AppContextProvider = (props) => {
         axios.defaults.withCredentials = true
         const response = await axios.get(backendUrl + '/api/post/data')
         setData(response.data.posts)
+        console.log(response.data.posts)
     }
 
 
@@ -69,6 +72,10 @@ export const AppContextProvider = (props) => {
             formData.append("expiresIn", expiresIn)
             formData.append("content", image)
 
+            tags.forEach(tag => {
+                formData.append("tags", tag);
+            });
+
 
             const { data } = await axios.post(backendUrl + '/api/post/create', formData, {
                 headers: {
@@ -84,6 +91,7 @@ export const AppContextProvider = (props) => {
             setSelectedImage(null)
             setTitle("")
             setTime("")
+            setTags([])
         } catch (error) {
             toast.error(error.message)
         }
@@ -182,12 +190,12 @@ export const AppContextProvider = (props) => {
         }
     };
 
-    const sendVerificationOtp = async()=>{
+    const sendVerificationOtp = async () => {
         try {
             setOtpLoading(true)
-            const {data} = await axios.post(backendUrl + "/api/user/verify-MailOtp")
+            const { data } = await axios.post(backendUrl + "/api/user/verify-MailOtp")
             console.log(data)
-            if(data.success){
+            if (data.success) {
                 setOtpLoading(false)
                 navigate("/VerifyAccount")
             }
@@ -196,16 +204,16 @@ export const AppContextProvider = (props) => {
         }
     }
 
-    const verifyOtp = async(e)=>{
+    const verifyOtp = async (e) => {
         e.preventDefault()
         try {
             setOtpLoading(true)
-            const {data}= await axios.post(backendUrl + "/api/user/verify-Mail",{
+            const { data } = await axios.post(backendUrl + "/api/user/verify-Mail", {
                 otp
             })
 
             console.log(data)
-            if(data.success){
+            if (data.success) {
                 isAccountVerified()
                 setOtpLoading(false)
                 navigate("/")
@@ -269,7 +277,9 @@ export const AppContextProvider = (props) => {
         verifyOtp,
         otpLoading,
         setOtpLoading,
-        isAccountVerified
+        isAccountVerified,
+        tags,
+        setTags
 
     }
 

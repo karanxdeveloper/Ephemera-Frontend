@@ -1,9 +1,24 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { AppContext } from "../Context/AppContext"
 
 function Create() {
 
-    const { image, setSelectedImage, setTime, setTitle, title, expiresIn, CreatePost, createLoading,isVerified } = useContext(AppContext)
+    const { image, setSelectedImage, setTime, setTitle, title, expiresIn, CreatePost, createLoading, isVerified, tags, setTags } = useContext(AppContext)
+
+    const [tagInput, setTagInput] = useState("");
+
+    const addTag = (e) => {
+        e.preventDefault();
+        if (tagInput.trim() !== "" && !tags.includes(tagInput.trim())) {
+            setTags([...tags, tagInput.trim()]);
+        }
+        console.log(tags)
+        setTagInput("");
+    };
+
+    const removeTag = (tagToRemove) => {
+        setTags(tags.filter((tag) => tag !== tagToRemove));
+    };
 
     return isVerified ? (
         <div className="bg-black w-full h-screen flex justify-center ">
@@ -37,8 +52,53 @@ function Create() {
                         </div>
 
                     </div>
+                
+                    <div className="flex flex-col items-center w-[75%] sm:w-[50%]">
+                        <div className="flex w-full border border-gray-400  rounded-full px-3 py-2">
+                            <input
+                                type="text"
+                                value={tagInput}
+                                onChange={(e) => setTagInput(e.target.value)}
+                                placeholder="Add a tag (e.g. nature, animals)"
+                                className="flex-1 bg-transparent  text-white outline-none"
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        e.preventDefault();
+                                        addTag(e);
+                                    }
+                                }}
+                            />
+                            <button
+                                type="button"  
+                                onClick={addTag}
+                                className="ml-2 bg-blue-500 text-white px-3 py-1 rounded-full"
+                            >
+                                Add
+                            </button>
+                        </div>
+
+                        
+                        <div className="flex flex-wrap gap-2 mt-2">
+                            {tags.map((tag, idx) => (
+                                <span
+                                    key={idx}
+                                    className="bg-gray-700 text-white px-3 py-1 rounded-full flex items-center gap-2"
+                                >
+                                    {tag}
+                                    <button
+                                        type="button"
+                                        onClick={() => removeTag(tag)}
+                                        className="text-red-400"
+                                    >
+                                        ✕
+                                    </button>
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
                     <input onChange={(e) => { setTitle(e.target.value) }} value={title} className="border-none text-center w-[75%] sm:w-[25%] text-white px-3 py-1 font-semibold font-sans rounded-xl" type="text" placeholder='Title' />
-                    {createLoading ? <div className="flex justify-center items-center"><div className=" text-center w-8 h-8 rounded-full border-4 border-white border-t-transparent animate-spin"></div></div>
+                    {createLoading ? <div className="flex justify-center items-center"><div className=" text-center w-8 h-8 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div></div>
                         : <button onClick={(e) => CreatePost(e)} className="border select-none text-center px-15 mt-5 font-semibold text-2xl font-sans bg-black text-white py-2 rounded-full">Post</button>}
                 </form>
             </div>

@@ -26,7 +26,7 @@ function Login() {
           </p>
         )}
 
-        {loginLoading ? <div className="flex justify-center items-center"><div className=" text-center w-8 h-8 rounded-full border-4 border-t-transparent animate-spin"></div></div>
+        {loginLoading ? <div className="flex justify-center items-center"><div className=" text-center w-8 h-8 rounded-full border-4 border-blue-400 border-t-transparent animate-spin"></div></div>
           : <button onClick={currState == "Sign Up" ? register : login} className="border cursor-pointer text-center px-15 mt-5 font-semibold text-xl font-sans bg-gray-900 text-white py-2 rounded-full">{currState == "Sign Up" ? "Sign Up" : "Login"}</button>
         }
 
