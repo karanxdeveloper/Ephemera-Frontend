@@ -10,7 +10,7 @@ function VerifyAccount() {
      <div className='text-white min-h-screen h-[100%] bg-black flex justify-center items-center overflow-y-auto'>
       <form className='w-[95%] sm:w-[25%]  py-10 flex flex-col  items-center gap-5 rounded-xl bg-gray-700'>
         
-        <input className='border p-3 rounded-md w-85' placeholder='Password' onChange={(e)=>setOtp(e.target.value)} value={otp}  type="password" />
+        <input className='border p-3 rounded-md w-85' placeholder='Otp' onChange={(e)=>setOtp(e.target.value)} value={otp}  type="password" />
 
        
 

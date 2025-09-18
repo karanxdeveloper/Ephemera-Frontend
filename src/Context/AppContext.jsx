@@ -58,6 +58,9 @@ export const AppContextProvider = (props) => {
 
 
     const CreatePost = async (e) => { // to create post
+        if(!image){
+            toast.error("choose a image")
+        }
         setCreateLoading(true)
         e.preventDefault()
 
