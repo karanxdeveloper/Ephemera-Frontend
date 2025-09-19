@@ -2,6 +2,7 @@ import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import isDisposableEmail from "disposable-email-detector"
 
 export const AppContext = createContext()
 
@@ -46,6 +47,10 @@ export const AppContextProvider = (props) => {
 
     const [tags, setTags] = useState([]);
 
+    const [profilePosts,setProfilePosts] = useState([])
+
+    const [postUserId,setPostUserId] = useState("")
+
     const navigate = useNavigate()
 
 
@@ -53,7 +58,7 @@ export const AppContextProvider = (props) => {
         axios.defaults.withCredentials = true
         const response = await axios.get(backendUrl + '/api/post/data')
         setData(response.data.posts)
-        console.log(response.data.posts)
+        // console.log(response.data.posts)
     }
 
 
@@ -121,8 +126,15 @@ export const AppContextProvider = (props) => {
     }
 
     const register = async (e) => { //register function
-        setLoginLoading(true)
         e.preventDefault()
+        setLoginLoading(true)
+
+           if (isDisposableEmail(email)) {
+        toast.error("Disposable / temporary emails are not allowed. Please use a valid email.");
+        setLoginLoading(false)
+        return;
+    }
+
         try {
             const { data } = await axios.post(backendUrl + "/api/user/register", {
                 name, email, password
@@ -168,6 +180,7 @@ export const AppContextProvider = (props) => {
     const openImage = async (id) => { // to get the single post 
 
         try {
+            setOtpLoading(true)
             if (id) {
 
                 const { data } = await axios.get(backendUrl + "/api/post/single-post", {
@@ -176,7 +189,8 @@ export const AppContextProvider = (props) => {
                 setViewPost(data.post.content)
                 setViewPostTitle(data.post.title)
                 setPostUser(data.post.user.name)
-
+                setPostUserId(data.post.user._id)
+                setOtpLoading(false)
             }
 
         } catch (error) {
@@ -228,6 +242,26 @@ export const AppContextProvider = (props) => {
         }
     }
 
+    const ProfileInfo = async()=>{
+        try {
+            const {data} = await axios.get(backendUrl + "/api/post/profileInfo")
+            setProfilePosts(data.post)
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
+    const userProfiles = async(id)=>{
+        try {
+            const {data} = await axios.get(backendUrl + "/api/post/fetchProfile",{
+                params: { userId: id }
+            })
+            setProfilePosts(data.post)
+            console.log(data)
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
 
     useEffect(() => {
         getUserData(), fetchData(), isAccountVerified()
@@ -283,7 +317,11 @@ export const AppContextProvider = (props) => {
         setOtpLoading,
         isAccountVerified,
         tags,
-        setTags
+        setTags,
+        ProfileInfo,
+        profilePosts,
+        postUserId,
+        userProfiles
 
     }
 

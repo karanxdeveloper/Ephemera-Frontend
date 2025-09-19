@@ -57,7 +57,7 @@ function Home() {
           }
 
           .glow-box {
-            animation: glowPulse 2s ease-in-out infinite;
+            animation: glowPulse 950ms ease-in-out infinite;
           }
         `}
       </style>
@@ -70,11 +70,7 @@ function Home() {
                   key={i}
                   className="bg-gray-800 h-[380px] rounded-lg overflow-hidden shadow-md flex items-center justify-center glow-box"
                 >
-                  <img
-                    src="/stickman-loading.gif"
-                    alt="Loading..."
-                    className="w-[40%] h-[60%] rounded-full"
-                  />
+                  
                 </div>
               ))}
             </div>
