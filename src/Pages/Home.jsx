@@ -3,9 +3,9 @@ import { AppContext } from "../Context/AppContext";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function Home() {
-  const { fetchData, data,loading,setLoading,posts,setPosts,isAccountVerified } = useContext(AppContext);
-  
- 
+  const { fetchData, data, loading, setLoading, posts, setPosts, isAccountVerified } = useContext(AppContext);
+
+
   const location = useLocation();
 
   const navigate = useNavigate()
@@ -70,7 +70,7 @@ function Home() {
                   key={i}
                   className="bg-gray-800 h-[380px] rounded-lg overflow-hidden shadow-md flex items-center justify-center glow-box"
                 >
-                  
+
                 </div>
               ))}
             </div>
@@ -84,17 +84,28 @@ function Home() {
                 {posts.map((post) => (
                   <div
                     key={post._id}
-                    onClick={()=>{navigate(`/view/${post._id}`);}}
+                    onClick={() => { navigate(`/view/${post._id}`); }}
                     className=" mb-4 break-inside-avoid "
-                  >
+                  >{post.mediaType === "image" ?
                     <img
                       src={post.content}
                       alt={post.title}
                       className="w-full h-auto object-contain rounded-xl bg-black"
-                    />
+                    /> : <video
+                      key={post._id}
+                      autoPlay
+                      muted
+                      loop
+                      className="w-full h-auto object-contain rounded-xl bg-black"
+                    >
+                      <source src={post.content} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>}
+
 
                   </div>
-                ))}</div></div>
+                ))}
+              </div></div>
           )}
         </div>
       </div>

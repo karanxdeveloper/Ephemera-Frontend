@@ -13,7 +13,7 @@ export const AppContextProvider = (props) => {
 
     const [data, setData] = useState([])
 
-    const [image, setSelectedImage] = useState(null)
+    const [media, setSelectedMedia] = useState(null)
     const [title, setTitle] = useState("")
     const [expiresIn, setTime] = useState("")
 
@@ -47,9 +47,11 @@ export const AppContextProvider = (props) => {
 
     const [tags, setTags] = useState([]);
 
-    const [profilePosts,setProfilePosts] = useState([])
+    const [profilePosts, setProfilePosts] = useState([])
 
-    const [postUserId,setPostUserId] = useState("")
+    const [postUserId, setPostUserId] = useState("")
+
+    const [mediaType, setMediaType] = useState("")
 
     const navigate = useNavigate()
 
@@ -58,28 +60,34 @@ export const AppContextProvider = (props) => {
         axios.defaults.withCredentials = true
         const response = await axios.get(backendUrl + '/api/post/data')
         setData(response.data.posts)
-        // console.log(response.data.posts)
+        console.log(response.data.posts)
     }
 
 
     const CreatePost = async (e) => { // to create post
-        if(!image){
-            toast.error("choose a image")
-            return
-        }
-        setCreateLoading(true)
         e.preventDefault()
-
-        if (!image || !(image instanceof Blob)) {
-            toast.error("Please select a valid image file")
+        if (!media) {
+            toast.error("choose a media")
             return
         }
 
+        if (!media || !(media instanceof Blob)) {
+            toast.error("Please select a valid media file")
+            return
+        } else if (!expiresIn) {
+            toast.error("choose your post time")
+            return
+        } else if (!title) {
+            toast.error("Please write a title")
+            return
+        }
+
+        setCreateLoading(true)
         try {
             const formData = new FormData()
             formData.append("title", title)
             formData.append("expiresIn", expiresIn)
-            formData.append("content", image)
+            formData.append("content", media)
 
             tags.forEach(tag => {
                 formData.append("tags", tag);
@@ -97,7 +105,7 @@ export const AppContextProvider = (props) => {
             toast.success("Post created successfully!")
             navigate("/")
 
-            setSelectedImage(null)
+            setSelectedMedia(null)
             setTitle("")
             setTime("")
             setTags([])
@@ -129,11 +137,11 @@ export const AppContextProvider = (props) => {
         e.preventDefault()
         setLoginLoading(true)
 
-           if (isDisposableEmail(email)) {
-        toast.error("Disposable / temporary emails are not allowed. Please use a valid email.");
-        setLoginLoading(false)
-        return;
-    }
+        if (isDisposableEmail(email)) {
+            toast.error("Disposable / temporary emails are not allowed. Please use a valid email.");
+            setLoginLoading(false)
+            return;
+        }
 
         try {
             const { data } = await axios.post(backendUrl + "/api/user/register", {
@@ -191,6 +199,8 @@ export const AppContextProvider = (props) => {
                 setPostUser(data.post.user.name)
                 setPostUserId(data.post.user._id)
                 setOtpLoading(false)
+                console.log(data)
+                setMediaType(data.post.mediaType)
             }
 
         } catch (error) {
@@ -198,7 +208,7 @@ export const AppContextProvider = (props) => {
         }
     }
 
-    const isAccountVerified = async () => {
+    const isAccountVerified = async () => { //to check if account is verified or not
         try {
             const { data } = await axios.post(backendUrl + "/api/user/isVerified");
             setIsVerified(data.success);
@@ -208,7 +218,7 @@ export const AppContextProvider = (props) => {
         }
     };
 
-    const sendVerificationOtp = async () => {
+    const sendVerificationOtp = async () => { //to send verification otp to user's email
         try {
             setOtpLoading(true)
             const { data } = await axios.post(backendUrl + "/api/user/verify-MailOtp")
@@ -222,7 +232,7 @@ export const AppContextProvider = (props) => {
         }
     }
 
-    const verifyOtp = async (e) => {
+    const verifyOtp = async (e) => { // to check the otp that the user have entered
         e.preventDefault()
         try {
             setOtpLoading(true)
@@ -242,18 +252,18 @@ export const AppContextProvider = (props) => {
         }
     }
 
-    const ProfileInfo = async()=>{
+    const ProfileInfo = async () => { // to get info of own account profile
         try {
-            const {data} = await axios.get(backendUrl + "/api/post/profileInfo")
+            const { data } = await axios.get(backendUrl + "/api/post/profileInfo")
             setProfilePosts(data.post)
         } catch (error) {
             toast.error(error.message)
         }
     }
 
-    const userProfiles = async(id)=>{
+    const userProfiles = async (id) => { // to get info of other user profile
         try {
-            const {data} = await axios.get(backendUrl + "/api/post/fetchProfile",{
+            const { data } = await axios.get(backendUrl + "/api/post/fetchProfile", {
                 params: { userId: id }
             })
             setProfilePosts(data.post)
@@ -284,14 +294,14 @@ export const AppContextProvider = (props) => {
         setPassword,
         setTime,
         setTitle,
-        setSelectedImage,
+        setSelectedMedia,
         data,
         setData,
         userData,
         name,
         email,
         password,
-        image,
+        media,
         title,
         expiresIn,
         menuToggle,
@@ -321,7 +331,8 @@ export const AppContextProvider = (props) => {
         ProfileInfo,
         profilePosts,
         postUserId,
-        userProfiles
+        userProfiles,
+        mediaType
 
     }
 

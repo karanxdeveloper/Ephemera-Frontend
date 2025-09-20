@@ -68,11 +68,24 @@ function Profile() {
                                 }}
                                 className="mb-4 break-inside-avoid cursor-pointer"
                             >
-                                <img
-                                    src={profilePost.content}
-                                    alt={profilePost.title}
-                                    className="w-full h-auto object-contain rounded-xl bg-black"
-                                />
+                               {profilePost.mediaType === "image" ?
+                                    <img
+                                        src={profilePost.content}
+                                        alt={profilePost.title}
+                                        className="w-full h-auto object-contain rounded-xl bg-black"
+                                    />
+                                    :
+                                    <video
+                                        key={profilePost._id}
+                                        autoPlay
+                                        muted
+                                        loop
+                                        className="w-full h-auto object-contain rounded-xl bg-black"
+                                    >
+                                        <source src={profilePost.content} type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    }
                             </div>
                         ))}
                     </div>
