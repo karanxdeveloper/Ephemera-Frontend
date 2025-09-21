@@ -35,7 +35,7 @@ const handleMediaChange = (e) => {
       URL.revokeObjectURL(video.src);
 
       if (video.duration > MAX_VIDEO_DURATION) {
-        toast.error(`Video duration cannot exceed ${MAX_VIDEO_DURATION} seconds.`);
+        toast.error(`Video duration cannot exceed 60 seconds.`);
       } else {
         if (previewUrl) URL.revokeObjectURL(previewUrl);
 

@@ -2,7 +2,6 @@ import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import isDisposableEmail from "disposable-email-detector"
 
 export const AppContext = createContext()
 
@@ -52,6 +51,11 @@ export const AppContextProvider = (props) => {
     const [postUserId, setPostUserId] = useState("")
 
     const [mediaType, setMediaType] = useState("")
+
+    const [scrollingPosts, setScrollingPosts] = useState([]);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [loadingScroll, setLoadingScroll] = useState(false);
 
     const navigate = useNavigate()
 
@@ -137,11 +141,6 @@ export const AppContextProvider = (props) => {
         e.preventDefault()
         setLoginLoading(true)
 
-        if (isDisposableEmail(email)) {
-            toast.error("Disposable / temporary emails are not allowed. Please use a valid email.");
-            setLoginLoading(false)
-            return;
-        }
 
         try {
             const { data } = await axios.post(backendUrl + "/api/user/register", {
@@ -273,6 +272,32 @@ export const AppContextProvider = (props) => {
         }
     }
 
+    const fetchScrollingPosts = async () => {
+        if (loadingScroll || !hasMore) return;
+        setLoadingScroll(true);
+
+        try {
+            const res = await axios.get(backendUrl + `/api/post/scrolling-posts`, {
+                params: { page, limit: 5 },
+                withCredentials: true // because you use cookies
+            });
+
+            console.log(res.data);
+
+            if (!res.data.posts || res.data.posts.length === 0) {
+                setHasMore(false);
+            } else {
+                setScrollingPosts((prev) => [...prev, ...res.data.posts]);
+                setPage((prev) => prev + 1);
+            }
+        } catch (err) {
+            console.error("Error fetching posts", err);
+        } finally {
+            setLoadingScroll(false);
+        }
+    };
+
+
     useEffect(() => {
         getUserData(), fetchData(), isAccountVerified()
     }, [])
@@ -332,7 +357,14 @@ export const AppContextProvider = (props) => {
         profilePosts,
         postUserId,
         userProfiles,
-        mediaType
+        mediaType,
+        scrollingPosts,
+        fetchScrollingPosts,
+        hasMore,
+        loadingScroll,
+        setScrollingPosts,
+        setPage,
+        setHasMore
 
     }
 

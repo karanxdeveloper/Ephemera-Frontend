@@ -48,8 +48,9 @@ useEffect(() => {
           rounded pt-10`}>
             <ul className="list-none w-[90vw] sm:w-[70vw] md:w-[45vw] lg:w-[30vw] xl:w-[20vw] bg-white border-white font-medium m-1 sm:m-2 p-3 sm:p-4 max-h-[70vh] overflow-y-auto rounded-xl text-sm">
               <li onClick={() => navigate("/")} className='text-center mt-2 select-none text-[18px] sm:text-[20px] py-2 px-2 rounded-xl hover:bg-gray-200 cursor-pointer'>Home</li>
-              <li onClick={() => navigate("/profile")} className='text-center mt-2 select-none text-[18px] sm:text-[20px] py-2 px-2 rounded-xl hover:bg-gray-200 cursor-pointer'>Profile</li>
+              <li onClick={() => navigate("/scroll")} className='text-center mt-2 select-none text-[18px] sm:text-[20px] py-2 px-2 rounded-xl hover:bg-gray-200 cursor-pointer'>Scroll</li>
               <li onClick={() => navigate("/create")} className='text-center mt-2 select-none text-[18px] sm:text-[20px] py-2 px-2 rounded-xl hover:bg-gray-200 cursor-pointer'>Create</li>
+              <li onClick={() => navigate("/profile")} className='text-center mt-2 select-none text-[18px] sm:text-[20px] py-2 px-2 rounded-xl hover:bg-gray-200 cursor-pointer'>Profile</li>
               <li onClick={() => navigate("/About")} className='text-center mt-2 select-none text-[18px] sm:text-[20px] py-2 px-2 rounded-xl hover:bg-gray-200 cursor-pointer'>About</li>
               <li onClick={() => logout()} className='text-center mt-2 select-none text-[18px] sm:text-[20px] py-2 px-2 rounded-xl hover:bg-gray-200 cursor-pointer'>Logout</li>
               {otpLoading ? <div className="flex justify-center items-center"><div className=" text-center w-8 border-black h-8 rounded-full border-4 border-t-transparent animate-spin"></div></div>

@@ -3,7 +3,7 @@ import { AppContext } from "../Context/AppContext";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function Home() {
-  const { fetchData, data, loading, setLoading, posts, setPosts, isAccountVerified } = useContext(AppContext);
+  const { fetchData, data, loading, setLoading, posts, setPosts, isAccountVerified,setScrollingPosts,setPage,setHasMore } = useContext(AppContext);
 
 
   const location = useLocation();
@@ -14,6 +14,9 @@ function Home() {
     setLoading(true)
     fetchData().finally(() => setLoading(false))
     isAccountVerified()
+    setScrollingPosts([]);
+    setPage(1);
+    setHasMore(true);
   }, [location]);
 
 

@@ -12,6 +12,7 @@ const View = lazy(() => import('./Pages/View'));
 const Profile = lazy(() => import('./Pages/Profile'));
 const UserProfile = lazy(() => import('./Pages/UserProfile'));
 const VerifyAccount = lazy(() => import('./Pages/VerifyAccount'));
+const ScrollingFeed = lazy(() => import('./Pages/ScrollingFeed'));
 
 function App() {
 
@@ -37,6 +38,7 @@ function App() {
       <Route path='/Profile' element={<Profile/>}/>
       <Route path='/UserProfile/:id' element={<UserProfile/>}/>
       <Route path='/VerifyAccount' element={<VerifyAccount/>}/>
+      <Route path='/scroll' element={<ScrollingFeed/>}/> 
     </Routes>
     </Suspense>
     </div>
