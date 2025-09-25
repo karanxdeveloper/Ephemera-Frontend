@@ -108,14 +108,14 @@ const handleMediaChange = (e) => {
         <form className="flex flex-col items-center justify-center lg:w-1/2 w-full gap-4 p-3">
 
           <div className="flex gap-3 flex-wrap justify-center w-full">
-            {[120, 240, 600].map((time) => (
+            {[3600, 14400,28800].map((time) => (
               <p
                 key={time}
                 onClick={() => setTime(time)}
                 className={`border cursor-pointer select-none px-3 py-1 rounded-full 
                   ${expiresIn === time ? "bg-blue-500 text-white" : "bg-white text-black"}`}
               >
-                {time / 60} minutes
+                {time / 3600} Hours
               </p>
             ))}
           </div>

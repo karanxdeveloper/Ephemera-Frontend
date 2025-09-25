@@ -8,10 +8,30 @@ function View() {
 
   const navigate = useNavigate()
 
-  const { viewPost, viewPostTitle, postUser, posts, openImage, postUserId, otpLoading, mediaType, isVerified, viewPostData, toggleLike } = useContext(AppContext)
+  const { viewPost, viewPostTitle, postUser, posts, openImage, postUserId, otpLoading, mediaType, isVerified, viewPostData, toggleLike, addComment, fetchComments } = useContext(AppContext)
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
+
+  
+  useEffect(() => {
+    if (id) {
+      openImage(id); 
+      fetchComments(id).then(setComments); 
+    }
+  }, [id]);
+
+  
+  const handleComment = async () => {
+    if (!newComment.trim()) return;
+    await addComment(viewPostData._id, newComment);
+    const updated = await fetchComments(viewPostData._id);
+    setComments(updated);
+    setNewComment("");
   };
 
   useEffect(() => {
@@ -50,12 +70,42 @@ function View() {
         </div>
         <p className='bg-white w-full h-[1px] mt-2'></p>
 
+
+ 
+        <div className="w-full px-3 mt-3">
+          {comments.slice(-2).map((c, i) => (
+            <p key={i} className="text-white text-sm">
+              <span className="font-bold">{c.user?.name}: </span>
+              {c.text}
+            </p>
+          ))}
+
+          {comments.length > 2 && (
+            <button className="text-blue-400 text-xs mt-1">
+              View all {comments.length} comments
+            </button>
+          )}
+
+          <div className="flex gap-2 mt-2">
+            <input
+              type="text"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Add a comment..."
+              className="flex-1 p-2 rounded bg-gray-800 text-white"
+            />
+            <button onClick={handleComment} className="px-3 py-1 bg-blue-500 rounded">
+              Post
+            </button>
+          </div>
+        </div>
+
         <div className="flex justify-center mt-4">
           <div className="columns-2 sm:columns-4 gap-2 w-[100%] sm:w-[90%] ">
             {posts.map((post) => (
               <div
                 key={post._id}
-                onClick={() => { navigate(`/view/${post._id}`);scrollToTop }}
+                onClick={() => { navigate(`/view/${post._id}`); scrollToTop }}
                 className=" mb-4 break-inside-avoid "
               >{post.mediaType === "image" ?
                 <img

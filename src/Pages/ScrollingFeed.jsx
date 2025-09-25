@@ -1,9 +1,23 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../Context/AppContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import CommentModal from "./CommentModal";
 
 function ScrollingFeed() {
-    const { scrollingPosts, fetchScrollingPosts, hasMore, loadingScroll, setScrollingPosts, setPage, setHasMore, toggleLike } = useContext(AppContext);
+    const {
+        scrollingPosts,
+        fetchScrollingPosts,
+        hasMore,
+        loadingScroll,
+        setScrollingPosts,
+        setPage,
+        setHasMore,
+        toggleLike,
+        addComment,
+        fetchComments,
+    } = useContext(AppContext);
+
+    const [modalPost, setModalPost] = useState(null); 
 
     const videoRefs = useRef([]);
     const containerRef = useRef(null);
@@ -64,7 +78,7 @@ function ScrollingFeed() {
                     const video = entry.target;
                     const postIndex = parseInt(video.dataset.index);
                     if (entry.isIntersecting && entry.intersectionRatio > 0.7) {
-                        video.play().catch(() => { });
+                        video.play().catch(() => {});
                         setCurrentIndex(postIndex);
                     } else {
                         video.pause();
@@ -85,7 +99,7 @@ function ScrollingFeed() {
         };
     }, [scrollingPosts]);
 
-    const validPosts = scrollingPosts.filter(post => {
+    const validPosts = scrollingPosts.filter((post) => {
         if (!post.expiresAt) return true;
         const now = new Date();
         const expiry = new Date(post.expiresAt);
@@ -114,7 +128,7 @@ function ScrollingFeed() {
                         id={`post-${index}`}
                         className="w-full h-screen flex items-center justify-center snap-start snap-always relative"
                     >
-                        {/* Media */}
+                        
                         <div className="absolute inset-0 flex items-center justify-center">
                             {post.mediaType === "video" && post.content ? (
                                 <video
@@ -140,16 +154,29 @@ function ScrollingFeed() {
                             )}
                         </div>
 
-                        {/* Right side vertical controls */}
+                        
                         <div className="absolute right-4 bottom-20 flex flex-col items-center gap-2 z-10">
-                            <button className="text-3xl cursor-pointer"
-                             onClick={() => toggleLike(post._id)}>
+                            <button
+                                className="text-3xl cursor-pointer"
+                                onClick={() => toggleLike(post._id)}
+                            >
                                 {post?.isLiked ? "❤️" : "🤍"}
                             </button>
                             <span className="text-white text-sm">{post?.likesCount || 0}</span>
+
+                           
+                            <button
+                                className="text-3xl cursor-pointer mt-2"
+                                onClick={() => setModalPost(post)}
+                            >
+                                💬
+                            </button>
+                            <span className="text-white text-sm">
+                                {postComments[post._id]?.length || 0}
+                            </span>
                         </div>
 
-                        {/* Bottom left post info */}
+                       
                         <div className="absolute bottom-4 left-4 p-4 z-10">
                             <span
                                 onClick={() => navigate(`/UserProfile/${post.user._id}`)}
@@ -192,6 +219,16 @@ function ScrollingFeed() {
                     </div>
                 )}
             </div>
+
+           
+            {modalPost && (
+                <CommentModal
+                    post={modalPost}
+                    onClose={() => setModalPost(null)}
+                    fetchComments={fetchComments}
+                    addComment={addComment}
+                />
+            )}
 
             <div className="absolute top-4 right-4 z-30 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full sm:right-1/2 sm:transform sm:translate-x-1/2 sm:top-4">
                 <span className="text-white text-xs">Use ↑↓ keys to navigate</span>
