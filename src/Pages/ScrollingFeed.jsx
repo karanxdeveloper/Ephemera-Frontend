@@ -26,6 +26,7 @@ function ScrollingFeed() {
     const location = useLocation();
     const navigate = useNavigate();
 
+
     useEffect(() => {
         setScrollingPosts([]);
         setPage(1);
@@ -33,6 +34,7 @@ function ScrollingFeed() {
         if (scrollingPosts.length === 0) fetchScrollingPosts();
     }, [location]);
 
+ 
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (e.key === "ArrowDown") {
@@ -57,6 +59,7 @@ function ScrollingFeed() {
         }
     };
 
+    
     useEffect(() => {
         const handleScroll = () => {
             if (!containerRef.current) return;
@@ -71,6 +74,7 @@ function ScrollingFeed() {
         }
     }, [hasMore, loadingScroll, fetchScrollingPosts]);
 
+    
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
@@ -128,7 +132,7 @@ function ScrollingFeed() {
                         id={`post-${index}`}
                         className="w-full h-screen flex items-center justify-center snap-start snap-always relative"
                     >
-                        
+                     
                         <div className="absolute inset-0 flex items-center justify-center">
                             {post.mediaType === "video" && post.content ? (
                                 <video
@@ -154,7 +158,7 @@ function ScrollingFeed() {
                             )}
                         </div>
 
-                        
+                     
                         <div className="absolute right-4 bottom-20 flex flex-col items-center gap-2 z-10">
                             <button
                                 className="text-3xl cursor-pointer"
@@ -162,21 +166,17 @@ function ScrollingFeed() {
                             >
                                 {post?.isLiked ? "❤️" : "🤍"}
                             </button>
-                            <span className="text-white text-sm">{post?.likesCount || 0}</span>
 
-                           
+                            
                             <button
                                 className="text-3xl cursor-pointer mt-2"
                                 onClick={() => setModalPost(post)}
                             >
                                 💬
                             </button>
-                            <span className="text-white text-sm">
-                                {postComments[post._id]?.length || 0}
-                            </span>
                         </div>
 
-                       
+                      
                         <div className="absolute bottom-4 left-4 p-4 z-10">
                             <span
                                 onClick={() => navigate(`/UserProfile/${post.user._id}`)}
@@ -220,7 +220,7 @@ function ScrollingFeed() {
                 )}
             </div>
 
-           
+            
             {modalPost && (
                 <CommentModal
                     post={modalPost}

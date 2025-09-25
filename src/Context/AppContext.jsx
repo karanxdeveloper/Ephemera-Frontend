@@ -327,7 +327,7 @@ export const AppContextProvider = (props) => {
         try {
             const res = await axios.post(`${backendUrl}/api/post/comment`, { postId, text });
             if (res.data.success) {
-                // Update state locally
+                
                 setScrollingPosts(prev =>
                     prev.map(p => p._id === postId ? res.data.post : p)
                 );
