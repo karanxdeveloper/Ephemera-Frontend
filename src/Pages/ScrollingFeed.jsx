@@ -3,27 +3,20 @@ import { AppContext } from "../Context/AppContext";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function ScrollingFeed() {
-    const { scrollingPosts, fetchScrollingPosts, hasMore, loadingScroll, setScrollingPosts,
-        setPage,
-        setHasMore } = useContext(AppContext);
+    const { scrollingPosts, fetchScrollingPosts, hasMore, loadingScroll, setScrollingPosts, setPage, setHasMore, toggleLike } = useContext(AppContext);
 
     const videoRefs = useRef([]);
     const containerRef = useRef(null);
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const location = useLocation();
-
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     useEffect(() => {
-
         setScrollingPosts([]);
         setPage(1);
         setHasMore(true);
-        if (scrollingPosts.length === 0){
-
-            fetchScrollingPosts();
-        }
+        if (scrollingPosts.length === 0) fetchScrollingPosts();
     }, [location]);
 
     useEffect(() => {
@@ -38,7 +31,6 @@ function ScrollingFeed() {
                 scrollToPost(prevIndex);
             }
         };
-
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [currentIndex, scrollingPosts]);
@@ -56,11 +48,8 @@ function ScrollingFeed() {
             if (!containerRef.current) return;
             const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
             const scrollPercentage = (scrollTop + clientHeight) / scrollHeight;
-            if (scrollPercentage > 0.8 && hasMore && !loadingScroll) {
-                fetchScrollingPosts();
-            }
+            if (scrollPercentage > 0.8 && hasMore && !loadingScroll) fetchScrollingPosts();
         };
-
         const container = containerRef.current;
         if (container) {
             container.addEventListener("scroll", handleScroll);
@@ -125,6 +114,7 @@ function ScrollingFeed() {
                         id={`post-${index}`}
                         className="w-full h-screen flex items-center justify-center snap-start snap-always relative"
                     >
+                        {/* Media */}
                         <div className="absolute inset-0 flex items-center justify-center">
                             {post.mediaType === "video" && post.content ? (
                                 <video
@@ -150,28 +140,31 @@ function ScrollingFeed() {
                             )}
                         </div>
 
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none"></div>
+                        {/* Right side vertical controls */}
+                        <div className="absolute right-4 bottom-20 flex flex-col items-center gap-2 z-10">
+                            <button className="text-3xl cursor-pointer"
+                             onClick={() => toggleLike(post._id)}>
+                                {post?.isLiked ? "❤️" : "🤍"}
+                            </button>
+                            <span className="text-white text-sm">{post?.likesCount || 0}</span>
+                        </div>
 
-                        <div className="absolute bottom-0 left-0 right-4 p-4 z-10">
-                            <div className="flex items-center gap-3 mb-3">
-                                <span onClick={() => navigate(`/UserProfile/${post.user._id}`)} className="font-bold text-lg cursor-pointer text-white">
-                                    @{post.user?.name?.toLowerCase().replace(/\s+/g, "") || "unknown"}
-                                </span>
+                        {/* Bottom left post info */}
+                        <div className="absolute bottom-4 left-4 p-4 z-10">
+                            <span
+                                onClick={() => navigate(`/UserProfile/${post.user._id}`)}
+                                className="font-bold text-white cursor-pointer"
+                            >
+                                @{post.user?.name?.toLowerCase().replace(/\s+/g, "") || "unknown"}
+                            </span>
+                            <p className="text-white font-medium">{post.title || "No title"}</p>
+                            <div className="flex flex-wrap gap-2">
+                                {post.tags?.map((tag, idx) => (
+                                    <span key={idx} className="text-white font-semibold text-sm">
+                                        #{tag}
+                                    </span>
+                                ))}
                             </div>
-                            <div className="mb-3">
-                                <p className="text-white font-medium text-base leading-relaxed">
-                                    {post.title || "No title"}
-                                </p>
-                            </div>
-                            {post.tags?.length > 0 && (
-                                <div className="flex flex-wrap gap-2 mb-3">
-                                    {post.tags.map((tag, idx) => (
-                                        <span key={idx} className="text-white font-semibold text-sm">
-                                            #{tag}
-                                        </span>
-                                    ))}
-                                </div>
-                            )}
                         </div>
 
                         {loadingScroll && index === validPosts.length - 1 && (
@@ -205,10 +198,10 @@ function ScrollingFeed() {
             </div>
 
             <style>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
+                .scrollbar-hide::-webkit-scrollbar {
+                    display: none;
+                }
+            `}</style>
         </div>
     );
 }

@@ -57,6 +57,9 @@ export const AppContextProvider = (props) => {
     const [hasMore, setHasMore] = useState(true);
     const [loadingScroll, setLoadingScroll] = useState(false);
 
+    const [postId,setPostId] = useState("")
+    const [viewPostData, setViewPostData] = useState(null);
+
     const navigate = useNavigate()
 
 
@@ -64,7 +67,7 @@ export const AppContextProvider = (props) => {
         axios.defaults.withCredentials = true
         const response = await axios.get(backendUrl + '/api/post/data')
         setData(response.data.posts)
-        console.log(response.data.posts)
+
     }
 
 
@@ -193,10 +196,13 @@ export const AppContextProvider = (props) => {
                 const { data } = await axios.get(backendUrl + "/api/post/single-post", {
                     params: { postId: id }
                 })
+
+                setViewPostData(data.post)
                 setViewPost(data.post.content)
                 setViewPostTitle(data.post.title)
                 setPostUser(data.post.user.name)
                 setPostUserId(data.post.user._id)
+                setPostId(data.post._id)
                 setOtpLoading(false)
                 console.log(data)
                 setMediaType(data.post.mediaType)
@@ -297,6 +303,27 @@ export const AppContextProvider = (props) => {
         }
     };
 
+const toggleLike = async (id) => {
+  try {
+    const res = await axios.post(`${backendUrl}/api/post/like`, { postId: id });
+
+    if (res.data.success) {
+      const { postId, likesCount, isLiked } = res.data;
+
+      setScrollingPosts(prev =>
+        prev.map(p => p._id === postId ? { ...p, likesCount, isLiked } : p)
+      );
+
+      setViewPostData(prev =>
+        prev?._id === postId ? { ...prev, likesCount, isLiked } : prev
+      );
+    }
+  } catch (err) {
+    console.error("Error toggling like:", err);
+  }
+};
+
+
 
     useEffect(() => {
         getUserData(), fetchData(), isAccountVerified()
@@ -364,7 +391,9 @@ export const AppContextProvider = (props) => {
         loadingScroll,
         setScrollingPosts,
         setPage,
-        setHasMore
+        setHasMore,
+        toggleLike,
+        viewPostData
 
     }
 

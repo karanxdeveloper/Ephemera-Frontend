@@ -3,7 +3,7 @@ import { AppContext } from "../Context/AppContext";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function Home() {
-  const { fetchData, data, loading, setLoading, posts, setPosts, isAccountVerified,setScrollingPosts,setPage,setHasMore } = useContext(AppContext);
+  const { fetchData, data, loading, setLoading, posts, setPosts, isAccountVerified,setScrollingPosts,setPage,setHasMore, toggleLike } = useContext(AppContext);
 
 
   const location = useLocation();
