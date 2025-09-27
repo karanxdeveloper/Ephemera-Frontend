@@ -2,10 +2,13 @@ import { useContext, useEffect, useState } from "react"
 import { AppContext } from "../Context/AppContext"
 import defaultImage from "../assets/media.png";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function Create() {
-  const { media, setSelectedMedia, setTime, setTitle, title, expiresIn, CreatePost, createLoading, isVerified, tags, setTags } = useContext(AppContext)
+  const { media, setSelectedMedia, setTime, setTitle, title, expiresIn, CreatePost, createLoading, isVerified, tags, setTags, isLoggedIn,sendVerificationOtp } = useContext(AppContext)
   const [tagInput, setTagInput] = useState("")
+
+  const navigate = useNavigate()
 
   const addTag = (e) => {
     e.preventDefault()
@@ -21,37 +24,60 @@ function Create() {
 
   const MAX_VIDEO_DURATION = 61
 
-const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
 
-const handleMediaChange = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+  const handleMediaChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-  if (file.type.startsWith("video/")) {
-    const video = document.createElement("video");
-    video.preload = "metadata";
+    if (file.type.startsWith("video/")) {
+      const video = document.createElement("video");
+      video.preload = "metadata";
 
-    video.onloadedmetadata = () => {
-      URL.revokeObjectURL(video.src);
+      video.onloadedmetadata = () => {
+        URL.revokeObjectURL(video.src);
 
-      if (video.duration > MAX_VIDEO_DURATION) {
-        toast.error(`Video duration cannot exceed 60 seconds.`);
-      } else {
-        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        if (video.duration > MAX_VIDEO_DURATION) {
+          toast.error(`Video duration cannot exceed 60 seconds.`,{
+                 style: {
+          background: "#90cdf4",
+          color: "#fff",
+          borderRadius:"20px"
+        }
+            });
+        } else {
+          if (previewUrl) URL.revokeObjectURL(previewUrl);
 
-        setSelectedMedia(file);
-        setPreviewUrl(URL.createObjectURL(file));
+          setSelectedMedia(file);
+          setPreviewUrl(URL.createObjectURL(file));
+        }
+      };
+
+      video.src = URL.createObjectURL(file);
+    } else {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+
+      setSelectedMedia(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+  useEffect(() => {
+    console.log(isVerified)
+    isLoggedIn ? "" : (navigate("/login"), toast.info("Not logged in to use this feature", {
+      style: {
+        background: "#90cdf4",
+        color: "#fff",
+        borderRadius:"20px"
       }
-    };
 
-    video.src = URL.createObjectURL(file);
-  } else {
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
+      
+    }
 
-    setSelectedMedia(file);
-    setPreviewUrl(URL.createObjectURL(file));
-  }
-};
+    ))
+  }, [isLoggedIn,navigate])
+
+  
 
 
   return isVerified ? (
@@ -63,13 +89,13 @@ const handleMediaChange = (e) => {
           <h3 className="font-semibold text-2xl select-none text-white font-sans">New Post</h3>
 
           <label
-            className="w-full flex justify-center items-center border rounded-md overflow-hidden"
+            className="w-full  flex justify-center items-center border rounded-md overflow-hidden"
             htmlFor="post"
           >
             {media ? (
               media.type.startsWith("video/") ? (
-                <video className="max-h-[400px] w-auto rounded-md" key={previewUrl} controls>
-                    
+                <video className="max-h-[400px] w-auto  rounded-md" key={previewUrl} controls>
+
                   <source src={previewUrl} type={media.type} />
                   Your browser does not support the video tag.
                 </video>
@@ -82,7 +108,7 @@ const handleMediaChange = (e) => {
               )
             ) : (
               <img
-                className="max-h-[400px] select-none w-auto h-auto object-contain rounded-md"
+                className="max-h-[400px] border border-blue-500 border-[5px]  select-none w-auto h-auto object-contain rounded-md"
                 src={defaultImage}
                 alt="Preview"
               />
@@ -108,7 +134,7 @@ const handleMediaChange = (e) => {
         <form className="flex flex-col items-center justify-center lg:w-1/2 w-full gap-4 p-3">
 
           <div className="flex gap-3 flex-wrap justify-center w-full">
-            {[3600, 14400,28800].map((time) => (
+            {[3600, 14400, 28800].map((time) => (
               <p
                 key={time}
                 onClick={() => setTime(time)}
@@ -190,9 +216,22 @@ const handleMediaChange = (e) => {
       </div>
     </div>
   ) : (
-    <h1 className="w-full min-h-screen flex justify-center items-center text-xl text-white">
-      Please verify your account to create your first post
-    </h1>
+    <div className="bg-black w-full min-h-screen flex justify-center items-center">
+      <div className="text-center p-8">
+        <h1 className="text-xl md:text-2xl text-white mb-4">
+          Please verify your account to create your first post
+        </h1>
+        <p className="text-gray-400 mb-6">
+          Click button to send Verification Otp to you registered email
+        </p>
+        <button
+          onClick={() => sendVerificationOtp()}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full transition"
+        >
+          Verify Email
+        </button>
+      </div>
+    </div>
   )
 }
 

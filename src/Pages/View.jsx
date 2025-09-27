@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../Context/AppContext';
 import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 function View() {
   const { id } = useParams();
@@ -20,27 +21,51 @@ function View() {
     toggleLike,
     addComment,
     fetchComments,
+    isLoggedIn
   } = useContext(AppContext);
 
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [showAllComments, setShowAllComments] = useState(false);
 
-  useEffect(() => {
-  if (id) {
-    openImage(id);  
-  }
-}, [id]);
+
 
  useEffect(() => {
-  if (viewPostData?._id) {
-    const fetchCommentsData = async () => {
-      const commentsData = await fetchComments(viewPostData._id);
-      setComments(commentsData);
-    };
-    fetchCommentsData();
+    if (!isLoggedIn) {
+      navigate("/login");
+      toast.info("Not logged in to use this feature", {
+        style: {
+          background: "#90cdf4",
+          color: "#fff",
+          borderRadius:"20px"
+        }
+      });
+      return;
+    }
+
+   
+    if (id) {
+      openImage(id);  
+    }
+  }, [id, isLoggedIn, navigate]);
+
+  if (!isLoggedIn || !posts) {
+    return (
+      <div className="bg-black min-h-screen text-white flex items-center justify-center">
+        <div>Loading...</div>
+      </div>
+    )
   }
-}, [viewPostData]);
+
+  useEffect(() => {
+    if (viewPostData?._id) {
+      const fetchCommentsData = async () => {
+        const commentsData = await fetchComments(viewPostData._id);
+        setComments(commentsData);
+      };
+      fetchCommentsData();
+    }
+  }, [viewPostData]);
 
   const handleComment = async () => {
     if (!newComment.trim() || !viewPostData?._id) return;
@@ -57,7 +82,6 @@ function View() {
   useEffect(() => {
     if (id) {
       openImage(id);
-      toggleLike(id);
     }
   }, [id]);
 
@@ -88,8 +112,8 @@ function View() {
         </div>
       )}
 
-   
-      <div className="w-[100%] px-3 mt-3 flex items-center gap-5 h-[10%]">
+
+      <div className="w-[100%] px-3 mt-3 flex items-center  gap-5 h-[10%]">
         {postUser ? (
           <p
             onClick={() => navigate(`/UserProfile/${postUserId}`)}
@@ -103,14 +127,14 @@ function View() {
           </div>
         )}
         <p className="w-[80%] text-[14px] text-white font-semibold font-sans sm:text-xl">{viewPostTitle}</p>
-        <button onClick={() => toggleLike(viewPostData._id)}>
+        <button className='text-[25px] text-white' onClick={() => toggleLike(viewPostData._id)}>
           {viewPostData?.isLiked ? "❤️" : "🤍"} {viewPostData?.likesCount || 0}
         </button>
       </div>
 
       <p className="bg-white w-full h-[1px] mt-2"></p>
 
-     
+
       <div className="w-full px-3 mt-3">
         {(showAllComments ? comments : comments.slice(-2)).map((c, i) => (
           <p key={i} className="text-white text-sm">
@@ -142,7 +166,7 @@ function View() {
         </div>
       </div>
 
-     
+
       <div className="flex justify-center mt-4">
         <div className="columns-2 sm:columns-4 gap-2 w-[100%] sm:w-[90%]">
           {posts.map((post) => (

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useActionState, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -59,6 +59,7 @@ export const AppContextProvider = (props) => {
 
     const [postId, setPostId] = useState("")
     const [viewPostData, setViewPostData] = useState(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
 
     const navigate = useNavigate()
 
@@ -74,18 +75,44 @@ export const AppContextProvider = (props) => {
     const CreatePost = async (e) => { // to create post
         e.preventDefault()
         if (!media) {
-            toast.error("choose a media")
+            toast.error("choose a media", {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            }
+
+            )
             return
         }
 
         if (!media || !(media instanceof Blob)) {
-            toast.error("Please select a valid media file")
+            toast.error("Please select a valid media file", {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            })
             return
         } else if (!expiresIn) {
-            toast.error("choose your post time")
+            toast.error("choose your post time", {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            })
             return
         } else if (!title) {
-            toast.error("Please write a title")
+            toast.error("Please write a title", {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            })
             return
         }
 
@@ -109,7 +136,13 @@ export const AppContextProvider = (props) => {
             })
 
             setCreateLoading(false)
-            toast.success("Post created successfully!")
+            toast.success("Post created successfully!", {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            })
             navigate("/")
 
             setSelectedMedia(null)
@@ -117,7 +150,13 @@ export const AppContextProvider = (props) => {
             setTime("")
             setTags([])
         } catch (error) {
-            toast.error(error.message)
+            toast.error(error.message, {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            })
         }
     }
 
@@ -129,6 +168,7 @@ export const AppContextProvider = (props) => {
             const { data } = await axios.post(backendUrl + '/api/user/login', {
                 email, password
             })
+            setIsLoggedIn(data.success)
             isAccountVerified()
             setLoginLoading(false)
             getUserData()
@@ -136,7 +176,13 @@ export const AppContextProvider = (props) => {
             setMail("")
             setPassword("")
         } catch (error) {
-            toast.error(error.message)
+            toast.error(error.message, {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            })
         }
     }
 
@@ -146,19 +192,33 @@ export const AppContextProvider = (props) => {
 
 
         try {
+            axios.defaults.withCredentials = true;
             const { data } = await axios.post(backendUrl + "/api/user/register", {
                 name, email, password
             })
-
-            toast.success(data.message)
+            setIsLoggedIn(data.success)
+            toast.success(data.message, {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            })
             isAccountVerified()
+            getUserData()
             setLoginLoading(false)
             navigate('/')
             setMail("")
             setPassword("")
             setName("")
         } catch (error) {
-            toast.error(error.message)
+            toast.error(error.message, {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            })
         }
     }
 
@@ -170,7 +230,13 @@ export const AppContextProvider = (props) => {
 
             setUserData(data.user)
         } catch (error) {
-            toast.error(error.message)
+            toast.error(error.message, {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            })
         }
     }
 
@@ -197,6 +263,8 @@ export const AppContextProvider = (props) => {
                     params: { postId: id }
                 })
 
+                toggleLike(id)
+
                 setViewPostData(data.post)
                 setViewPost(data.post.content)
                 setViewPostTitle(data.post.title)
@@ -204,12 +272,17 @@ export const AppContextProvider = (props) => {
                 setPostUserId(data.post.user._id)
                 setPostId(data.post._id)
                 setOtpLoading(false)
-                console.log(data)
                 setMediaType(data.post.mediaType)
             }
 
         } catch (error) {
-            toast.error(error.message)
+            toast.error(error.message, {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            })
         }
     }
 
@@ -219,7 +292,13 @@ export const AppContextProvider = (props) => {
             setIsVerified(data.success);
 
         } catch (error) {
-            toast.error(error.message);
+            toast.error(error.message, {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            });
         }
     };
 
@@ -227,13 +306,19 @@ export const AppContextProvider = (props) => {
         try {
             setOtpLoading(true)
             const { data } = await axios.post(backendUrl + "/api/user/verify-MailOtp")
-            console.log(data)
+
             if (data.success) {
                 setOtpLoading(false)
                 navigate("/VerifyAccount")
             }
         } catch (error) {
-            toast.error(error.message)
+            toast.error(error.message, {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            })
         }
     }
 
@@ -245,15 +330,27 @@ export const AppContextProvider = (props) => {
                 otp
             })
 
-            console.log(data)
+
             if (data.success) {
                 isAccountVerified()
                 setOtpLoading(false)
                 navigate("/")
             }
-            toast.success(data.success)
+            toast.success(data.success, {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            })
         } catch (error) {
-            toast.error(error.message)
+            toast.error(error.message, {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            })
         }
     }
 
@@ -262,7 +359,13 @@ export const AppContextProvider = (props) => {
             const { data } = await axios.get(backendUrl + "/api/post/profileInfo")
             setProfilePosts(data.post)
         } catch (error) {
-            toast.error(error.message)
+            toast.error(error.message, {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            })
         }
     }
 
@@ -272,9 +375,15 @@ export const AppContextProvider = (props) => {
                 params: { userId: id }
             })
             setProfilePosts(data.post)
-            console.log(data)
+
         } catch (error) {
-            toast.error(error.message)
+            toast.error(error.message, {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            })
         }
     }
 
@@ -285,19 +394,26 @@ export const AppContextProvider = (props) => {
         try {
             const res = await axios.get(backendUrl + `/api/post/scrolling-posts`, {
                 params: { page, limit: 5 },
-                withCredentials: true // because you use cookies
+                withCredentials: true
             });
 
-            console.log(res.data);
+
 
             if (!res.data.posts || res.data.posts.length === 0) {
                 setHasMore(false);
             } else {
                 setScrollingPosts((prev) => [...prev, ...res.data.posts]);
+
                 setPage((prev) => prev + 1);
             }
         } catch (err) {
-            console.error("Error fetching posts", err);
+            toast.error("Error fetching posts", err, {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            });
         } finally {
             setLoadingScroll(false);
         }
@@ -314,12 +430,26 @@ export const AppContextProvider = (props) => {
                     prev.map(p => p._id === postId ? { ...p, likesCount, isLiked } : p)
                 );
 
+                setData(prev =>
+                    prev.map(p => p._id === postId ? { ...p, likesCount, isLiked } : p)
+                );
+
+                setPosts(prev =>
+                    prev.map(p => p._id === postId ? { ...p, likesCount, isLiked } : p)
+                );
+
                 setViewPostData(prev =>
                     prev?._id === postId ? { ...prev, likesCount, isLiked } : prev
                 );
             }
         } catch (err) {
-            console.error("Error toggling like:", err);
+            toast.error("Error toggling like:", err, {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            });
         }
     };
 
@@ -327,7 +457,7 @@ export const AppContextProvider = (props) => {
         try {
             const res = await axios.post(`${backendUrl}/api/post/comment`, { postId, text });
             if (res.data.success) {
-                
+
                 setScrollingPosts(prev =>
                     prev.map(p => p._id === postId ? res.data.post : p)
                 );
@@ -337,7 +467,13 @@ export const AppContextProvider = (props) => {
                 );
             }
         } catch (err) {
-            console.error("Error adding comment:", err);
+            toast.error("Error adding comment:", err, {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            });
         }
     };
 
@@ -348,7 +484,13 @@ export const AppContextProvider = (props) => {
             });
             return res.data.comments || [];
         } catch (err) {
-            console.error("Error fetching comments:", err);
+            toast.error("Error fetching comments:", err, {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            });
             return [];
         }
     };
@@ -425,7 +567,8 @@ export const AppContextProvider = (props) => {
         toggleLike,
         viewPostData,
         addComment,
-        fetchComments
+        fetchComments,
+        isLoggedIn
 
     }
 

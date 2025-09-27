@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../Context/AppContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import CommentModal from "./CommentModal";
+import { toast } from "react-toastify";
 
 function ScrollingFeed() {
     const {
@@ -15,9 +16,10 @@ function ScrollingFeed() {
         toggleLike,
         addComment,
         fetchComments,
+        isLoggedIn
     } = useContext(AppContext);
 
-    const [modalPost, setModalPost] = useState(null); 
+    const [modalPost, setModalPost] = useState(null);
 
     const videoRefs = useRef([]);
     const containerRef = useRef(null);
@@ -28,13 +30,20 @@ function ScrollingFeed() {
 
 
     useEffect(() => {
+        isLoggedIn ? "" : (navigate("/login"), toast.info("Not logged in to use this feature", {
+            style: {
+                background: "#90cdf4",
+                color: "#fff",
+                borderRadius:"20px"
+            }
+        }))
         setScrollingPosts([]);
         setPage(1);
         setHasMore(true);
         if (scrollingPosts.length === 0) fetchScrollingPosts();
     }, [location]);
 
- 
+
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (e.key === "ArrowDown") {
@@ -59,8 +68,9 @@ function ScrollingFeed() {
         }
     };
 
-    
+
     useEffect(() => {
+
         const handleScroll = () => {
             if (!containerRef.current) return;
             const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
@@ -74,7 +84,7 @@ function ScrollingFeed() {
         }
     }, [hasMore, loadingScroll, fetchScrollingPosts]);
 
-    
+
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
@@ -82,7 +92,7 @@ function ScrollingFeed() {
                     const video = entry.target;
                     const postIndex = parseInt(video.dataset.index);
                     if (entry.isIntersecting && entry.intersectionRatio > 0.7) {
-                        video.play().catch(() => {});
+                        video.play().catch(() => { });
                         setCurrentIndex(postIndex);
                     } else {
                         video.pause();
@@ -132,7 +142,7 @@ function ScrollingFeed() {
                         id={`post-${index}`}
                         className="w-full h-screen flex items-center justify-center snap-start snap-always relative"
                     >
-                     
+
                         <div className="absolute inset-0 flex items-center justify-center">
                             {post.mediaType === "video" && post.content ? (
                                 <video
@@ -158,16 +168,17 @@ function ScrollingFeed() {
                             )}
                         </div>
 
-                     
+
                         <div className="absolute right-4 bottom-20 flex flex-col items-center gap-2 z-10">
                             <button
-                                className="text-3xl cursor-pointer"
+                                className="text-3xl flex flex-col cursor-pointer"
                                 onClick={() => toggleLike(post._id)}
                             >
                                 {post?.isLiked ? "❤️" : "🤍"}
+                                <p className="text-sm">{post?.likesCount || 0}</p>
                             </button>
 
-                            
+
                             <button
                                 className="text-3xl cursor-pointer mt-2"
                                 onClick={() => setModalPost(post)}
@@ -176,7 +187,7 @@ function ScrollingFeed() {
                             </button>
                         </div>
 
-                      
+
                         <div className="absolute bottom-4 left-4 p-4 z-10">
                             <span
                                 onClick={() => navigate(`/UserProfile/${post.user._id}`)}
@@ -220,7 +231,7 @@ function ScrollingFeed() {
                 )}
             </div>
 
-            
+
             {modalPost && (
                 <CommentModal
                     post={modalPost}
@@ -240,7 +251,7 @@ function ScrollingFeed() {
                 }
             `}</style>
         </div>
-    );
+    )
 }
 
 export default ScrollingFeed;
