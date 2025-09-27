@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { Bounce, Flip, Slide, ToastContainer, Zoom } from 'react-toastify';
-import Navbar from './Components/Navbar'; // Import Navbar directly
+import { Slide, ToastContainer, Zoom } from 'react-toastify';
+import Navbar from './Components/Navbar'; 
 
 const Home = lazy(() => import('./Pages/Home'));
 const Create = lazy(() => import('./Pages/Create'));
@@ -16,7 +16,7 @@ const ScrollingFeed = lazy(() => import('./Pages/ScrollingFeed'));
 function App() {
   return (
     <>
-      <Navbar /> {/* Always at the top */}
+      <Navbar /> 
       <ToastContainer position="top-center" autoClose={2000} hideProgressBar={true} transition={Slide} limit={1} />
       <Suspense
         fallback={

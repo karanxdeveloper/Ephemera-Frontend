@@ -229,6 +229,8 @@ export const AppContextProvider = (props) => {
             const { data } = await axios.post(backendUrl + '/api/user/userData')
 
             setUserData(data.user)
+            setIsLoggedIn(true)
+            setLoading(false)
         } catch (error) {
             toast.error(error.message, {
                 style: {
@@ -498,7 +500,18 @@ export const AppContextProvider = (props) => {
 
 
     useEffect(() => {
-        getUserData(), fetchData(), isAccountVerified()
+       const initializeApp = async () => {
+        
+        try {
+            await getUserData()
+            await fetchData()
+            await isAccountVerified()
+        } catch (error) {
+            console.error('App initialization error:', error)
+        }
+    }
+    
+    initializeApp()
     }, [])
 
 

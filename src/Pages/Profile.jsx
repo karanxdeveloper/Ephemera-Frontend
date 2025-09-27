@@ -1,35 +1,38 @@
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useState } from "react"
 import { AppContext } from "../Context/AppContext"
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
+import { LogOut, MoreVertical } from "lucide-react"
 
 function Profile() {
-    const { ProfileInfo, profilePosts, userData, isLoggedIn } = useContext(AppContext)
+    const { ProfileInfo, profilePosts, userData, isLoggedIn,logout } = useContext(AppContext)
     const navigate = useNavigate()
+
+    const [menuOpen, setMenuOpen] = useState(false);
 
     const postCount = profilePosts?.length || 0;
 
     useEffect(() => {
         if (!isLoggedIn) {
             navigate("/login")
-            toast.info("Not logged in to use this feature",{
+            toast.info("Not logged in to use this feature", {
                 style: {
-                background: "#90cdf4",
-                color: "#fff",
-                borderRadius:"20px"
-            }
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
             })
-            return 
+            return
         }
         ProfileInfo()
     }, [isLoggedIn, navigate])
 
     if (!isLoggedIn || !userData) {
-        return  (
-        <div className="bg-black min-h-screen text-white flex items-center justify-center">
-            <div>Loading...</div>
-        </div>
-    )
+        return (
+            <div className="bg-black min-h-screen text-white flex items-center justify-center">
+                <div>Loading...</div>
+            </div>
+        )
     }
 
     const scrollToTop = () => {
@@ -38,7 +41,7 @@ function Profile() {
 
     return (
         <div className="bg-black min-h-screen text-white">
-            <div className="w-full h-auto md:py-10 border-b border-blue-300  flex flex-col md:flex-row justify-center md:justify-around items-center gap-6 px-4 py-6">
+            <div className="w-full relative h-auto md:py-10 border-b  border-blue-300  flex flex-col md:flex-row justify-center md:justify-around items-center gap-6 px-4 py-6">
 
                 <h1 className="
           flex justify-center items-center border border-[8px] border-blue-600
@@ -64,6 +67,36 @@ function Profile() {
                         Posts : <span className="ml-2 select-none ">{postCount}</span>
                     </li>
                 </ul>
+                
+
+                {isLoggedIn && (
+                    <div className="absolute right-5 top-10 lg:top-25 lg:right-35">
+                       
+                        <button
+                            onClick={() => setMenuOpen(!menuOpen)}
+                            className="p-2 rounded-full hover:bg-gray-800 transition"
+                        >
+                            <MoreVertical size={24} />
+                        </button>
+
+                        
+                        {menuOpen && (
+                            <div className="absolute right-0 mt-2 w-32 bg-white text-black rounded-lg shadow-lg">
+                                <button
+                                    onClick={() => {
+                                        logout();
+                                        setMenuOpen(false);
+                                    }}
+                                    className="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-200 rounded-lg"
+                                >
+                                    <LogOut size={18} />
+                                    Logout
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
+
             </div>
 
             {profilePosts && profilePosts.length > 0 ? (

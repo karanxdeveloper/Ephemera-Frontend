@@ -169,7 +169,7 @@ function ScrollingFeed() {
                         </div>
 
 
-                        <div className="absolute right-4 bottom-20 flex flex-col items-center gap-2 z-10">
+                        <div className="absolute right-4 bottom-24 flex flex-col items-center gap-2 z-10">
                             <button
                                 className="text-3xl flex flex-col cursor-pointer"
                                 onClick={() => toggleLike(post._id)}
@@ -188,7 +188,7 @@ function ScrollingFeed() {
                         </div>
 
 
-                        <div className="absolute bottom-4 left-4 p-4 z-10">
+                        <div className="absolute bottom-16 left-4 p-4 z-10">
                             <span
                                 onClick={() => navigate(`/UserProfile/${post.user._id}`)}
                                 className="font-bold text-white cursor-pointer"

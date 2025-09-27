@@ -1,14 +1,31 @@
 import { useContext, useEffect, useState } from "react"
 import { AppContext } from "../Context/AppContext"
-import defaultImage from "../assets/media.png";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import defaultImage from "../assets/media.png"
+import { toast } from "react-toastify"
+import { useNavigate } from "react-router-dom"
 
 function Create() {
-  const { media, setSelectedMedia, setTime, setTitle, title, expiresIn, CreatePost, createLoading, isVerified, tags, setTags, isLoggedIn,sendVerificationOtp } = useContext(AppContext)
-  const [tagInput, setTagInput] = useState("")
+  const {
+    media,
+    setSelectedMedia,
+    setTime,
+    setTitle,
+    title,
+    expiresIn,
+    CreatePost,
+    createLoading,
+    isVerified,
+    tags,
+    setTags,
+    isLoggedIn,
+    sendVerificationOtp,
+  } = useContext(AppContext)
 
+  const [tagInput, setTagInput] = useState("")
+  const [previewUrl, setPreviewUrl] = useState(null)
   const navigate = useNavigate()
+
+  const MAX_VIDEO_DURATION = 61
 
   const addTag = (e) => {
     e.preventDefault()
@@ -22,80 +39,73 @@ function Create() {
     setTags(tags.filter((tag) => tag !== tagToRemove))
   }
 
-  const MAX_VIDEO_DURATION = 61
-
-  const [previewUrl, setPreviewUrl] = useState(null);
-
   const handleMediaChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const file = e.target.files[0]
+    if (!file) return
 
     if (file.type.startsWith("video/")) {
-      const video = document.createElement("video");
-      video.preload = "metadata";
+      const video = document.createElement("video")
+      video.preload = "metadata"
 
       video.onloadedmetadata = () => {
-        URL.revokeObjectURL(video.src);
+        URL.revokeObjectURL(video.src)
 
         if (video.duration > MAX_VIDEO_DURATION) {
-          toast.error(`Video duration cannot exceed 60 seconds.`,{
-                 style: {
-          background: "#90cdf4",
-          color: "#fff",
-          borderRadius:"20px"
-        }
-            });
+          toast.error(`Video duration cannot exceed 60 seconds.`, {
+            style: {
+              background: "#90cdf4",
+              color: "#fff",
+              borderRadius: "20px",
+            },
+          })
         } else {
-          if (previewUrl) URL.revokeObjectURL(previewUrl);
-
-          setSelectedMedia(file);
-          setPreviewUrl(URL.createObjectURL(file));
+          if (previewUrl) URL.revokeObjectURL(previewUrl)
+          setSelectedMedia(file)
+          setPreviewUrl(URL.createObjectURL(file))
         }
-      };
-
-      video.src = URL.createObjectURL(file);
-    } else {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-
-      setSelectedMedia(file);
-      setPreviewUrl(URL.createObjectURL(file));
-    }
-  };
-
-  useEffect(() => {
-    console.log(isVerified)
-    isLoggedIn ? "" : (navigate("/login"), toast.info("Not logged in to use this feature", {
-      style: {
-        background: "#90cdf4",
-        color: "#fff",
-        borderRadius:"20px"
       }
 
-      
+      video.src = URL.createObjectURL(file)
+    } else {
+      if (previewUrl) URL.revokeObjectURL(previewUrl)
+      setSelectedMedia(file)
+      setPreviewUrl(URL.createObjectURL(file))
     }
+  }
 
-    ))
-  }, [isLoggedIn,navigate])
-
-  
-
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login")
+      toast.info("Not logged in to use this feature", {
+        style: {
+          background: "#90cdf4",
+          color: "#fff",
+          borderRadius: "20px",
+        },
+      })
+    }
+  }, [isLoggedIn, navigate])
 
   return isVerified ? (
-    <div className="bg-black w-full min-h-screen flex justify-center items-center">
+    <div className="bg-black w-full min-h-screen flex justify-center md:items-center overflow-y-auto">
       <div className="w-[90%] lg:w-[80%] xl:w-[70%] h-auto rounded-md bg-transparent mt-10 flex flex-col lg:flex-row gap-6">
-
-
+      
         <div className="flex flex-col items-center justify-start lg:w-1/2 w-full gap-4">
-          <h3 className="font-semibold text-2xl select-none text-white font-sans">New Post</h3>
+          <h3 className="font-semibold text-2xl select-none text-white font-sans">
+            New Post
+          </h3>
 
           <label
-            className="w-full  flex justify-center items-center border rounded-md overflow-hidden"
+            className="w-full flex justify-center items-center border rounded-md overflow-hidden"
             htmlFor="post"
           >
             {media ? (
               media.type.startsWith("video/") ? (
-                <video className="max-h-[400px] w-auto  rounded-md" key={previewUrl} controls>
-
+                <video
+                  className="max-h-[400px] w-auto rounded-md"
+                  key={previewUrl}
+                  controls
+                >
                   <source src={previewUrl} type={media.type} />
                   Your browser does not support the video tag.
                 </video>
@@ -108,16 +118,21 @@ function Create() {
               )
             ) : (
               <img
-                className="max-h-[400px] border border-blue-500 border-[5px]  select-none w-auto h-auto object-contain rounded-md"
+                className="max-h-[400px] border border-blue-500 border-[5px] select-none w-auto h-auto object-contain rounded-md"
                 src={defaultImage}
                 alt="Preview"
               />
             )}
           </label>
 
-
           <div className="flex flex-col items-center">
-            <input onChange={handleMediaChange} className="hidden" type="file" id="post" accept="image/*,video/*" />
+            <input
+              onChange={handleMediaChange}
+              className="hidden"
+              type="file"
+              id="post"
+              accept="image/*,video/*"
+            />
             <label
               htmlFor="post"
               className="cursor-pointer border-2 border-dashed border-gray-400 rounded-xl px-4 py-2 mt-2 text-white text-sm sm:text-base font-sans hover:bg-gray-800 transition"
@@ -125,27 +140,32 @@ function Create() {
               📁 Upload Media
             </label>
             {media && (
-              <p className="mt-2 text-gray-400 text-sm text-center truncate max-w-[150px]">{media.name}</p>
+              <p className="mt-2 text-gray-400 text-sm text-center truncate max-w-[150px]">
+                {media.name}
+              </p>
             )}
           </div>
         </div>
 
-
-        <form className="flex flex-col items-center justify-center lg:w-1/2 w-full gap-4 p-3">
-
+       
+        <form className="flex flex-col items-center justify-center lg:w-1/2 w-full gap-4 p-3 pb-24 md:pb-8">
+          
           <div className="flex gap-3 flex-wrap justify-center w-full">
             {[3600, 14400, 28800].map((time) => (
               <p
                 key={time}
                 onClick={() => setTime(time)}
                 className={`border cursor-pointer select-none px-3 py-1 rounded-full 
-                  ${expiresIn === time ? "bg-blue-500 text-white" : "bg-white text-black"}`}
+                  ${
+                    expiresIn === time
+                      ? "bg-blue-500 text-white"
+                      : "bg-white text-black"
+                  }`}
               >
                 {time / 3600} Hours
               </p>
             ))}
           </div>
-
 
           <div className="flex flex-col items-center w-[90%]">
             <div className="flex w-full border border-gray-400 rounded-full px-3 py-2">
@@ -190,7 +210,7 @@ function Create() {
             </div>
           </div>
 
-
+          
           <input
             onChange={(e) => setTitle(e.target.value)}
             value={title}
@@ -199,7 +219,6 @@ function Create() {
             placeholder="Title"
           />
 
-
           {createLoading ? (
             <div className="flex justify-center items-center">
               <div className="text-center w-8 h-8 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div>
@@ -207,7 +226,7 @@ function Create() {
           ) : (
             <button
               onClick={(e) => CreatePost(e)}
-              className="border select-none text-center px-10 mt-3 font-semibold text-lg font-sans bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-full"
+              className="md:static md:mt-3 sticky bottom-4 z-50 border select-none text-center px-10 font-semibold text-lg font-sans bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-full"
             >
               Post
             </button>
@@ -222,7 +241,7 @@ function Create() {
           Please verify your account to create your first post
         </h1>
         <p className="text-gray-400 mb-6">
-          Click button to send Verification Otp to you registered email
+          Click button to send Verification Otp to your registered email
         </p>
         <button
           onClick={() => sendVerificationOtp()}

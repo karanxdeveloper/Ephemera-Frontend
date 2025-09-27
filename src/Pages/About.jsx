@@ -21,7 +21,7 @@ function About() {
       </div>
 
 
-      <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-8 w-full max-w-4xl">
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 mb-4 w-full max-w-4xl">
 
         <div className="flex-1 bg-gray-900 p-4 rounded-xl flex flex-col items-center text-center hover:scale-105 transition-transform">
           <Shield size={28} className="mb-2 text-white" />
@@ -51,7 +51,7 @@ function About() {
       </div>
 
 
-      <button className="bg-blue-500 px-6 py-2 rounded-full font-semibold hover:bg-blue-600 transition-colors" onClick={()=>navigate("/")}>
+      <button className="bg-blue-500 px-6 py-2 rounded-full font-semibold hover:bg-blue-600 transition-colors mb-4" onClick={()=>navigate("/")}>
         EXPLORE FEATURES
       </button>
     </div>

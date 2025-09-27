@@ -1,12 +1,17 @@
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AppContext } from '../Context/AppContext';
 import { Home, User, PlusSquare, Info, ScrollText } from "lucide-react";
 
 function Navbar() {
   const { userData, setMenuToggle, menuToggle, logout, sendVerificationOtp, otpLoading, isVerified, posts, setPosts, data } = useContext(AppContext)
   const navigate = useNavigate()
+  const location = useLocation()
   const [text, setText] = useState("");
+
+  const isScrollPage = location.pathname === '/scroll';
+  const isMobile = window.innerWidth < 768; 
+  const hideTopNav = isScrollPage && isMobile;
 
   const searching = (text) => {
     if (!text.trim()) {
@@ -26,7 +31,7 @@ function Navbar() {
 
   return (
     <>
-      <div className="flex w-full justify-center bg-black p-2">
+      <div className={`flex w-full justify-center bg-black p-2 ${hideTopNav ? 'hidden' : 'block'}`}>
         <div className="flex items-center justify-between w-[95%] sm:w-[90%] text-white">
           <h1
             onClick={() => navigate("/")}
@@ -80,7 +85,8 @@ function Navbar() {
         </div>
       </div>
 
-      <div className="md:hidden fixed bottom-0 w-full bg-black text-white border-t border-gray-700 flex justify-around py-2 z-50">
+
+      <div className="md:hidden fixed bottom-0 w-full bg-black text-white border-t border-gray-700 flex justify-around py-2 z-150">
         <button onClick={() => navigate("/")} className="flex flex-col items-center">
           <Home size={22} />
           <span className="text-[10px]">Home</span>
