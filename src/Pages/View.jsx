@@ -21,41 +21,34 @@ function View() {
     toggleLike,
     addComment,
     fetchComments,
-    isLoggedIn
+    isLoggedIn,
+    loading
   } = useContext(AppContext);
 
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [showAllComments, setShowAllComments] = useState(false);
 
-
-
- useEffect(() => {
+  useEffect(() => {
+    if (loading) return; 
+    
     if (!isLoggedIn) {
       navigate("/login");
       toast.info("Not logged in to use this feature", {
         style: {
           background: "#90cdf4",
           color: "#fff",
-          borderRadius:"20px"
+          borderRadius: "20px"
         }
       });
       return;
     }
 
-   
     if (id) {
       openImage(id);  
     }
-  }, [id, isLoggedIn, navigate]);
+  }, [id, isLoggedIn, loading]);
 
-  if (!isLoggedIn || !posts) {
-    return (
-      <div className="bg-black min-h-screen text-white flex items-center justify-center">
-        <div>Loading...</div>
-      </div>
-    )
-  }
 
   useEffect(() => {
     if (viewPostData?._id) {
@@ -66,6 +59,7 @@ function View() {
       fetchCommentsData();
     }
   }, [viewPostData]);
+
 
   const handleComment = async () => {
     if (!newComment.trim() || !viewPostData?._id) return;
@@ -79,14 +73,19 @@ function View() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  useEffect(() => {
-    if (id) {
-      openImage(id);
-    }
-  }, [id]);
+ 
+  if (loading || !isLoggedIn || !posts) {
+    return (
+      <div className="bg-black min-h-screen text-white flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+
+
 
   return isVerified ? (
-    <div className="min-h-screen bg-black flex-col flex items-center">
+    <div className="min-h-screen bg-black flex-col flex items-center pb-20">
       {otpLoading ? (
         <div className="flex justify-center w-full h-[55%] items-center">
           <div className="text-center w-8 h-8 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div>
@@ -113,39 +112,47 @@ function View() {
       )}
 
 
-      <div className="w-[100%] px-3 mt-3 flex items-center  gap-5 h-[10%]">
+      <div className="w-full px-3 mt-3 flex items-center gap-2 sm:gap-5">
         {postUser ? (
-          <p
+          <div
             onClick={() => navigate(`/UserProfile/${postUserId}`)}
-            className="w-10 h-10 rounded-full bg-white font-sans flex text-xl justify-center items-center font-bold text-black"
+            className="w-10 h-10 flex-shrink-0 rounded-full bg-white font-sans flex text-xl justify-center items-center font-bold text-black cursor-pointer"
           >
             {postUser[0].toUpperCase()}
-          </p>
+          </div>
         ) : (
           <div className="flex justify-center items-center">
             <div className="text-center w-8 h-8 rounded-full border-4 border-t-transparent animate-spin"></div>
           </div>
         )}
-        <p className="w-[80%] text-[14px] text-white font-semibold font-sans sm:text-xl">{viewPostTitle}</p>
-        <button className='text-[25px] text-white' onClick={() => toggleLike(viewPostData._id)}>
-          {viewPostData?.isLiked ? "❤️" : "🤍"} {viewPostData?.likesCount || 0}
+
+        <p className="flex-1 text-sm sm:text-xl text-white font-semibold font-sans overflow-hidden text-ellipsis">
+          {viewPostTitle}
+        </p>
+
+        <button
+          className='text-2xl sm:text-3xl text-white flex-shrink-0 flex items-center gap-1'
+          onClick={() => toggleLike(viewPostData._id)}
+        >
+          <span>{viewPostData?.isLiked ? "❤️" : "🤍"}</span>
+          <span className="text-base sm:text-lg">{viewPostData?.likesCount || 0}</span>
         </button>
       </div>
 
       <p className="bg-white w-full h-[1px] mt-2"></p>
 
-
+  
       <div className="w-full px-3 mt-3">
         {(showAllComments ? comments : comments.slice(-2)).map((c, i) => (
-          <p key={i} className="text-white text-sm">
-            <span className="font-bold">{c.user?.name}: </span>
+          <p key={i} className="text-white text-sm mb-2">
+            <span className="font-bold text-blue-400">{c.user?.name}: </span>
             {c.text}
           </p>
         ))}
 
         {comments.length > 2 && (
           <button
-            className="text-blue-400 text-xs mt-1"
+            className="text-blue-400 text-xs mt-1 mb-2"
             onClick={() => setShowAllComments(prev => !prev)}
           >
             {showAllComments ? "Hide comments" : `View all ${comments.length} comments`}
@@ -157,17 +164,21 @@ function View() {
             type="text"
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleComment()}
             placeholder="Add a comment..."
-            className="flex-1 p-2 rounded bg-gray-800 text-white"
+            className="flex-1 p-2 rounded bg-gray-800 text-white outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <button onClick={handleComment} className="px-3 py-1 bg-blue-500 rounded">
+          <button
+            onClick={handleComment}
+            className="px-3 py-1 bg-blue-500 rounded text-white font-semibold hover:bg-blue-600"
+          >
             Post
           </button>
         </div>
       </div>
 
 
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-center mt-4 w-full">
         <div className="columns-2 sm:columns-4 gap-2 w-[100%] sm:w-[90%]">
           {posts.map((post) => (
             <div
@@ -176,13 +187,13 @@ function View() {
                 navigate(`/view/${post._id}`);
                 scrollToTop();
               }}
-              className="mb-4 break-inside-avoid"
+              className="mb-4 break-inside-avoid cursor-pointer"
             >
               {post.mediaType === "image" ? (
                 <img
                   src={post.content}
                   alt={post.title}
-                  className="w-full h-auto object-contain rounded-xl bg-black"
+                  className="w-full h-auto object-contain rounded-xl bg-black hover:opacity-90 transition-opacity"
                 />
               ) : (
                 <video
@@ -190,7 +201,7 @@ function View() {
                   autoPlay
                   muted
                   loop
-                  className="w-full h-auto object-contain rounded-xl bg-black"
+                  className="w-full h-auto object-contain rounded-xl bg-black hover:opacity-90 transition-opacity"
                 >
                   <source src={post.content} type="video/mp4" />
                   Your browser does not support the video tag.

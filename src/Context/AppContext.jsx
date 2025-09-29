@@ -228,10 +228,16 @@ export const AppContextProvider = (props) => {
 
             const { data } = await axios.post(backendUrl + '/api/user/userData')
 
-            setUserData(data.user)
-            setIsLoggedIn(true)
-            setLoading(false)
+            if (data.user) {
+                setUserData(data.user);
+                setIsLoggedIn(true);
+            } else {
+                setUserData(null);
+                setIsLoggedIn(false);
+            }
         } catch (error) {
+            setUserData(null);
+            setIsLoggedIn(false);
             toast.error(error.message, {
                 style: {
                     background: "#90cdf4",
@@ -265,16 +271,15 @@ export const AppContextProvider = (props) => {
                     params: { postId: id }
                 })
 
-                toggleLike(id)
-
+            console.log("Post data from backend:", data.post.isLiked, data.post.likesCount); 
                 setViewPostData(data.post)
                 setViewPost(data.post.content)
                 setViewPostTitle(data.post.title)
                 setPostUser(data.post.user.name)
                 setPostUserId(data.post.user._id)
                 setPostId(data.post._id)
-                setOtpLoading(false)
                 setMediaType(data.post.mediaType)
+                setOtpLoading(false)
             }
 
         } catch (error) {
@@ -500,18 +505,21 @@ export const AppContextProvider = (props) => {
 
 
     useEffect(() => {
-       const initializeApp = async () => {
-        
-        try {
-            await getUserData()
-            await fetchData()
-            await isAccountVerified()
-        } catch (error) {
-            console.error('App initialization error:', error)
+        const initializeApp = async () => {
+            setLoading(true);
+            try {
+                await getUserData();
+                await fetchData();
+                await isAccountVerified();
+            } catch (error) {
+                console.error('App initialization error:', error);
+                setIsLoggedIn(false);
+            } finally {
+                setLoading(false);
+            }
         }
-    }
-    
-    initializeApp()
+
+        initializeApp();
     }, [])
 
 

@@ -86,7 +86,7 @@ function Navbar() {
       </div>
 
 
-      <div className="md:hidden fixed bottom-0 w-full bg-black text-white border-t border-gray-700 flex justify-around py-2 z-150">
+      <div className="md:hidden fixed bottom-0 w-full bg-black text-white border-t border-gray-700 flex justify-around py-2 z-100">
         <button onClick={() => navigate("/")} className="flex flex-col items-center">
           <Home size={22} />
           <span className="text-[10px]">Home</span>

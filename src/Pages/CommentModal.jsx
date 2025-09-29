@@ -20,9 +20,9 @@ function CommentModal({ post, onClose, fetchComments, addComment }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-center items-end">
+    <div className="fixed inset-0  bg-black/60 backdrop-blur-sm flex justify-center items-end z-200">
    
-      <div className="w-full sm:w-1/2 md:w-1/3 bg-gray-900 rounded-t-2xl max-h-[80vh] overflow-y-auto p-4">
+      <div className="w-full sm:w-1/2 md:w-1/3 bg-gray-900 rounded-t-2xl max-h-[80vh] flex flex-col overflow-y-auto p-4">
        
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-white font-bold">Comments</h3>

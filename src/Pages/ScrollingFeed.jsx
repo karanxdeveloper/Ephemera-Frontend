@@ -16,7 +16,8 @@ function ScrollingFeed() {
         toggleLike,
         addComment,
         fetchComments,
-        isLoggedIn
+        isLoggedIn,
+        loading
     } = useContext(AppContext);
 
     const [modalPost, setModalPost] = useState(null);
@@ -28,21 +29,28 @@ function ScrollingFeed() {
     const location = useLocation();
     const navigate = useNavigate();
 
+      useEffect(() => {
 
-    useEffect(() => {
-        isLoggedIn ? "" : (navigate("/login"), toast.info("Not logged in to use this feature", {
-            style: {
-                background: "#90cdf4",
-                color: "#fff",
-                borderRadius:"20px"
-            }
-        }))
-        setScrollingPosts([]);
-        setPage(1);
-        setHasMore(true);
-        if (scrollingPosts.length === 0) fetchScrollingPosts();
-    }, [location]);
-
+        if (loading) return;
+        
+        if (!isLoggedIn) {
+            navigate("/login");
+            toast.info("Not logged in to use this feature", {
+                style: {
+                    background: "#90cdf4",
+                    color: "#fff",
+                    borderRadius: "20px"
+                }
+            });
+            return;
+        }
+        
+        if (scrollingPosts.length === 0) {
+            setPage(1);
+            setHasMore(true);
+            fetchScrollingPosts();
+        }
+    }, [isLoggedIn, loading]);
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -68,9 +76,7 @@ function ScrollingFeed() {
         }
     };
 
-
     useEffect(() => {
-
         const handleScroll = () => {
             if (!containerRef.current) return;
             const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
@@ -83,7 +89,6 @@ function ScrollingFeed() {
             return () => container.removeEventListener("scroll", handleScroll);
         }
     }, [hasMore, loadingScroll, fetchScrollingPosts]);
-
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -120,11 +125,19 @@ function ScrollingFeed() {
         return now < expiry;
     });
 
+
+    if (loading) {
+        return (
+            <div className="w-full h-screen bg-black text-white flex justify-center items-center">
+                <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full"></div>
+            </div>
+        );
+    }
     return (
         <div className="w-full h-screen bg-black text-white flex justify-center relative overflow-hidden">
             <div
                 ref={containerRef}
-                className="w-full sm:w-1/2 md:w-2/5 lg:w-1/3 xl:w-1/4 2xl:w-1/3 h-screen snap-y snap-mandatory overflow-y-scroll scrollbar-hide"
+                className="w-full  sm:w-1/2 md:w-2/5 lg:w-1/3 xl:w-1/4 2xl:w-1/3 h-screen snap-y snap-mandatory overflow-y-scroll scrollbar-hide"
                 style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
             >
                 {validPosts.length === 0 && !loadingScroll && (
